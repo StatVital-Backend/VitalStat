@@ -1,4 +1,8 @@
 package com.statvital.StatVital.exceptions;
 
-public class HospitalAlreadyExistsException {
+public class HospitalAlreadyExist extends HospitalExceptions{
+
+    public HospitalAlreadyExist(String message) {
+        super(message);
+    }
 }

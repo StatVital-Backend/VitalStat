@@ -4,7 +4,7 @@ package com.statvital.StatVital.dtos.request;
 import lombok.Data;
 
 @Data
-public class SignInHospitalAdminRequest {
+public class SignUpHospitalAdminRequest {
     private String FacilityName;
     private String FacilityUID;
     private String email;
