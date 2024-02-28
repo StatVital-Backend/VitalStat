@@ -1,4 +1,4 @@
-package com.statvital.StatVital.model;
+package com.statvital.StatVital.data.model;
 
 
 import jakarta.persistence.Entity;
@@ -14,7 +14,11 @@ public class HospitalAdmin {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    private String email;
     private String username;
+    private String password;
+    private String facilityName;
+    private boolean isLoggedIn;
 
 
 
