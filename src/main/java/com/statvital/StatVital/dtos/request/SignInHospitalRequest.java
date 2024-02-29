@@ -7,4 +7,5 @@ import lombok.Data;
 public class SignInHospitalRequest {
     private String email;
     private String password;
+    private String facilityName;
 }

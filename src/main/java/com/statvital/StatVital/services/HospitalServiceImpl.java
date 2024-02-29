@@ -22,25 +22,27 @@ import static com.statvital.StatVital.utils.Mapper.responseMapper;
 @AllArgsConstructor
 public class HospitalServiceImpl implements HospitalService{
     private final HospitalAdminRepo hospitalAdminRepo;
+
     @Override
-    public SignInHospitalAdminResponse signin(SignUpHospitalAdminRequest request) {
-        findHospital(request);
+    public SignInHospitalAdminResponse signup(SignUpHospitalAdminRequest request) {
+        findHospital(request.getFacilityName());
         return responseMapper(hospitalAdminRepo.save(hospitalMapper(request)));
     }
 
     @Override
     public LogInAdminResponse logIn(SignInHospitalRequest request) {
+        HospitalAdmin hospitalAdmin = getAdmin(request.getFacilityName());
+        validatePassword(request, hospitalAdmin);
 
-        HospitalAdmin admin = getAdmin(request.getEmail());
-        validatePassword (request, admin);
-
-        admin.setLoggedIn(true);
-        HospitalAdmin newAdmin =hospitalAdminRepo.save(admin);
+        hospitalAdmin.setLoggedIn(true);
+        HospitalAdmin hospitalAdmin1 = hospitalAdminRepo.save(hospitalAdmin);
 
         LogInAdminResponse logInAdminResponse = new LogInAdminResponse();
         logInAdminResponse.setMessage("Login Successful");
+        logInAdminResponse.setLoggedIn(hospitalAdmin1.isLoggedIn());
 
-        return null;
+        return logInAdminResponse;
+
     }
 
     private void validatePassword(SignInHospitalRequest request, HospitalAdmin admin) {
@@ -54,13 +56,13 @@ public class HospitalServiceImpl implements HospitalService{
         return admin.get();
     }
 
-    private Optional<HospitalAdmin> retrieveUser(String email) {
-        Optional<HospitalAdmin> newAdmin = retrieveUser(email);
-        return null;
-    }
+//    private Optional<HospitalAdmin> retrieveAdmin(String email) {
+//        Optional<HospitalAdmin> newAdmin = retrieveAdmin(email);
+//        return null;
+//    }
 
-    private void findHospital(SignUpHospitalAdminRequest request) {
-        Optional<HospitalAdmin>admin = hospitalAdminRepo.findHospitalAdminByFacilityName(request.getFacilityName());
+    private void findHospital(String facilityName) {
+        Optional<HospitalAdmin> admin = hospitalAdminRepo.findHospitalAdminByFacilityName(facilityName);
         if(admin.isPresent())
             throw new HospitalAlreadyExist("Hospital Already Exist");
     }
