@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class Mapper {
     public static HospitalAdmin hospitalMapper(SignUpHospitalAdminRequest request){
         HospitalAdmin hospitalAdmin = new HospitalAdmin();
-        hospitalAdmin.setEmail(request.getFacilityName());
+        hospitalAdmin.setFacilityName(request.getFacilityName());
         hospitalAdmin.setPassword(request.getPassword());
         return hospitalAdmin;
     }

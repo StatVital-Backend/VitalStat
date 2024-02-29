@@ -7,5 +7,5 @@ import lombok.Data;
 public class LogInAdminResponse {
     private String logInDate;
     private String message;
-    private String isLoggedIn;
+    private boolean isLoggedIn;
 }
