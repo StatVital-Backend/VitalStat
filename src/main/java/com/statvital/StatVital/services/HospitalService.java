@@ -17,4 +17,6 @@ public interface HospitalService {
 //    Boolean verifyToken(String token);
 
     Child searchChild(String searchChildReq);
+
+    Child updateChildInfo(UpdateChildReq updateChildReq);
 }

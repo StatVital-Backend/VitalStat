@@ -71,7 +71,7 @@ public class HospitalServiceImpl implements HospitalService{
     }
 
     private void findRegisteredChild(String referenceId) {
-        Optional<Child>child = childRepository.findChildById(referenceId);
+        Optional<Child>child = childRepository.findChildByReferenceId(referenceId);
         if(child.isPresent()) throw new ChildExist("Child Already Exist");
     }
 
@@ -86,6 +86,31 @@ public class HospitalServiceImpl implements HospitalService{
         Optional<Child> child = childService.findChild(name);
         if (child.isEmpty()) throw new ChildNotFound("Child not found");
         return child.get();
+    }
+
+    @Override
+    public Child updateChildInfo(UpdateChildReq updateChildReq) {
+        Child child = findChild(updateChildReq.getName());
+
+        // Update child's information
+        child.setName(updateChildReq.getName());
+        child.setAge(updateChildReq.getAge());
+        // Update other fields as needed
+
+        // Save the updated child information
+        childRepository.save(child);
+
+        return child;
+    }
+
+    // Other methods...
+
+    private Child findChild(String id) {
+        Optional<Child> childOptional = childRepository.findChildByReferenceId(id);
+        if (childOptional.isEmpty()) {
+            throw new ChildNotFound("Child not found");
+        }
+        return childOptional.get();
     }
 
 

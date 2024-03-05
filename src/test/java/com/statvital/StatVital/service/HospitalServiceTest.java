@@ -244,6 +244,39 @@ public class HospitalServiceTest {
 
     }
 
+    @Test
+    public void testThatRegisteredChildCanBeUpdated(){
+        SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
+        request.setFacilityName("Pascal Hospital");
+        request.setEmail("ph@gmail.com");
+        request.setSector("Private");
+        request.setPassword("password");
+
+        hospitalService.signup(request);
+        assertThat(hospitalAdminRepo.count(), is(1L));
+
+        SignInHospitalRequest sign = new SignInHospitalRequest();
+        sign.setFacilityName("Pascal Hospital");
+        sign.setEmail("ph@gmail.com");
+        sign.setPassword("password");
+        LogInAdminResponse logInAdminResponse = hospitalService.logIn(sign);
+        assertThat(logInAdminResponse.isLoggedIn(), is(true));
+
+
+        ChildRequest childRequest = new ChildRequest();
+        childRequest.setName("Moses");
+        childRequest.setSex("Female");
+        childRequest.setMotherName("Mary");
+        childRequest.setFatherName("Joseph");
+
+
+        hospitalService.registerChild(childRequest);
+        assertThat(childRepository.count(), is(1L));
+
+        
+
+    }
+
 
 
 }
