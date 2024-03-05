@@ -2,11 +2,16 @@ package com.statvital.StatVital.service;
 
 
 import com.statvital.StatVital.data.model.HospitalAdmin;
+import com.statvital.StatVital.data.repository.ChildRepository;
 import com.statvital.StatVital.data.repository.HospitalAdminRepo;
+import com.statvital.StatVital.dtos.request.ChildRequest;
+import com.statvital.StatVital.dtos.request.DeleteChildReq;
 import com.statvital.StatVital.dtos.request.SignInHospitalRequest;
 import com.statvital.StatVital.dtos.request.SignUpHospitalAdminRequest;
 import com.statvital.StatVital.dtos.response.LogInAdminResponse;
 import com.statvital.StatVital.exceptions.HospitalAlreadyExist;
+import com.statvital.StatVital.exceptions.IncorrectCredentials;
+import com.statvital.StatVital.services.ChildService;
 import com.statvital.StatVital.services.HospitalService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,9 +34,14 @@ public class HospitalServiceTest {
     private  HospitalAdminRepo hospitalAdminRepo;
     @Autowired
     private  HospitalService hospitalService;
+    @Autowired
+    private ChildService childService;
+    @Autowired
+    private ChildRepository childRepository;
     @BeforeEach
     public void doThis(){
         hospitalAdminRepo.deleteAll();
+        childRepository.deleteAll();
     }
 
     @Test
@@ -64,12 +74,6 @@ public class HospitalServiceTest {
         request1.setEmail("kch@gmail.com");
         request1.setPassword("password");
 
-
-
-//        hospitalService.signup(request1);
-//        List<HospitalAdmin> all = hospitalAdminRepo.findAll();
-//        System.out.println(all);
-//        assertThat(all.size(), is(1));
 
         assertThrows(HospitalAlreadyExist.class, ()->hospitalService.signup(request1));
 
@@ -112,11 +116,134 @@ public class HospitalServiceTest {
         sign.setFacilityName("Pascal Hospital");
         sign.setEmail("ph@gmail.com");
         sign.setPassword("password");
-        System.out.println(sign);
         LogInAdminResponse logInAdminResponse = hospitalService.logIn(sign);
         assertThat(logInAdminResponse.isLoggedIn(), is(true));
 
 
     }
+    @Test
+    public void testThatRegisteredHospitalCanLogInWithCorrectPassword(){
+        SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
+        request.setFacilityName("Pascal Hospital");
+        request.setEmail("ph@gmail.com");
+        request.setSector("Private");
+        request.setPassword("password");
+
+        hospitalService.signup(request);
+        assertThat(hospitalAdminRepo.count(), is(1L));
+
+        SignInHospitalRequest sign = new SignInHospitalRequest();
+        sign.setFacilityName("Pascal Hospital");
+        sign.setEmail("ph@gmail.com");
+        sign.setPassword("pasword");
+        assertThrows(IncorrectCredentials.class, ()-> hospitalService.logIn(sign));
+
+    }
+    @Test
+    public void testThatChildCanBeRegistered(){
+        SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
+        request.setFacilityName("Pascal Hospital");
+        request.setEmail("ph@gmail.com");
+        request.setSector("Private");
+        request.setPassword("password");
+
+        hospitalService.signup(request);
+        assertThat(hospitalAdminRepo.count(), is(1L));
+
+        SignInHospitalRequest sign = new SignInHospitalRequest();
+        sign.setFacilityName("Pascal Hospital");
+        sign.setEmail("ph@gmail.com");
+        sign.setPassword("password");
+
+
+        ChildRequest childRequest = new ChildRequest();
+        childRequest.setChildName("Seyi");
+        childRequest.setMotherName("Esther");
+        childRequest.setFatherName("Julius");
+
+        hospitalService.registerChild(childRequest);
+        assertThat(hospitalAdminRepo.count(), is(1L));
+    }
+
+    @Test
+    public void testToRegisterMultipleChildren(){
+        SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
+        request.setFacilityName("Pascal Hospital");
+        request.setEmail("ph@gmail.com");
+        request.setSector("Private");
+        request.setPassword("password");
+
+        hospitalService.signup(request);
+        assertThat(hospitalAdminRepo.count(), is(1L));
+
+        SignInHospitalRequest sign = new SignInHospitalRequest();
+        sign.setFacilityName("Pascal Hospital");
+        sign.setEmail("ph@gmail.com");
+        sign.setPassword("password");
+
+
+        ChildRequest childRequest = new ChildRequest();
+        childRequest.setChildName("Seyi");
+        childRequest.setMotherName("Esther");
+        childRequest.setFatherName("Julius");
+
+        hospitalService.registerChild(childRequest);
+        assertThat(childRepository.count(), is(1L));
+
+        ChildRequest childRequest1 = new ChildRequest();
+        childRequest1.setChildName("ANu");
+        childRequest1.setMotherName("Saka");
+        childRequest1.setFatherName("Tinubu");
+
+        hospitalService.registerChild(childRequest1);
+        assertThat(childRepository.count(), is(2L));
+
+    }
+    @Test
+    public void testThatRegisteredChildCanBeDeleted(){
+        SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
+        request.setFacilityName("Pascal Hospital");
+        request.setEmail("ph@gmail.com");
+        request.setSector("Private");
+        request.setPassword("password");
+
+        hospitalService.signup(request);
+        assertThat(hospitalAdminRepo.count(), is(1L));
+
+        SignInHospitalRequest sign = new SignInHospitalRequest();
+        sign.setFacilityName("Pascal Hospital");
+        sign.setEmail("ph@gmail.com");
+        sign.setPassword("password");
+        LogInAdminResponse logInAdminResponse = hospitalService.logIn(sign);
+        assertThat(logInAdminResponse.isLoggedIn(), is(true));
+
+
+        ChildRequest childRequest = new ChildRequest();
+        childRequest.setName("Mint");
+        childRequest.setMotherName("Mute");
+        childRequest.setFatherName("Julius");
+        childRequest.setSex("Female");
+
+        hospitalService.registerChild(childRequest);
+        assertThat(childRepository.count(), is(1L));
+
+        ChildRequest childRequest1 = new ChildRequest();
+        childRequest1.setName("Kuli");
+        childRequest1.setMotherName("Saka");
+        childRequest1.setFatherName("Tinubu");
+        childRequest1.setSex("Female");
+
+        hospitalService.registerChild(childRequest1);
+        assertThat(childRepository.count(), is(2L));
+
+        DeleteChildReq deleteChildReq = new DeleteChildReq();
+        deleteChildReq.setChildName("Mint");
+
+        hospitalService.deleteChildInfo(deleteChildReq);
+        assertThat(childRepository.count(), is(1L));
+
+    }
+
+
 
 }

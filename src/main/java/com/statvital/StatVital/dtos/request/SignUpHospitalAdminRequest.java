@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Data
 public class SignUpHospitalAdminRequest {
-    private String FacilityName;
-    private String FacilityUID;
+    private String facilityName;
+    private String facilityUID;
     private String email;
     private String password;
     private String sector;

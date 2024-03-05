@@ -18,7 +18,10 @@ public class HospitalAdmin {
     private String username;
     private String password;
     private String facilityName;
+    private String facilityLocation;
+    private String phoneNumber;
     private boolean isLoggedIn;
+    private boolean isEnabled;
 
 
 

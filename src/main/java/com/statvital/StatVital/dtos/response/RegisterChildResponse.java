@@ -1,2 +1,13 @@
-package com.statvital.StatVital.dtos.response;public class RegisterChildResponse {
+package com.statvital.StatVital.dtos.response;
+
+
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+public class RegisterChildResponse {
+    private LocalDateTime dateRegistered;
+    private String message;
+    private String id;
 }

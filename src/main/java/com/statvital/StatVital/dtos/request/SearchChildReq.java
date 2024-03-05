@@ -1,4 +1,11 @@
 package com.statvital.StatVital.dtos.request;
 
-public class SearchChildRequest {
+import lombok.Data;
+
+@Data
+public class SearchChildReq {
+    public String name;
+    public String sex;
+
+
 }

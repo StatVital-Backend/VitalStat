@@ -3,13 +3,16 @@ package com.statvital.StatVital.services;
 import java.util.Date;
 
 import com.statvital.StatVital.config.AppConfig;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-
-public class Token implements JwtToken{
+@Service
+public class JwtTokenImpl implements JwtToken{
     private static final String SECRET_KEY = AppConfig.DEFAULT_SECRET_KEY;
-    private static final long EXPIRATION_TIME = 3600000; // 1 hour in milliseconds
+    private static final long EXPIRATION_TIME = 3600000;
 
     @Override
     public String generateToken(String email, String password) {
@@ -25,4 +28,18 @@ public class Token implements JwtToken{
                 .compact();
 
     }
+
+    @Override
+    public String verifyToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+
+        //        String password = claims.ge
+        return claims.getSubject();
+    }
+
 }
