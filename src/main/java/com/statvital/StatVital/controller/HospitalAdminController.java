@@ -23,7 +23,7 @@ public class HospitalAdminController {
     public SignInHospitalAdminResponse signIn (@RequestBody SignUpHospitalAdminRequest request){
 
        try{
-            SignInHospitalAdminResponse signInHospitalAdminResponse =hospitalService.signup(request);
+            SignInHospitalAdminResponse signInHospitalAdminResponse = hospitalService.signup(request);
             return signInHospitalAdminResponse;
        }catch (Exception error){
            SignInHospitalAdminResponse errorResponse = new SignInHospitalAdminResponse();

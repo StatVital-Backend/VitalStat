@@ -18,5 +18,6 @@ public class Child {
     private String dob;
     private String sex;
     private String referenceId;
+    private String age;
 
 }

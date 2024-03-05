@@ -10,6 +10,6 @@ import java.util.Optional;
 public interface ChildRepository extends JpaRepository<Child, Long> {
     Optional<Child> findChildByName(String name);
 
-    Optional<Child> findChildById(String referenceId);
+    Optional<Child> findChildByReferenceId(String referenceId);
 
 }
