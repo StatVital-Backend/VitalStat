@@ -35,7 +35,7 @@ public class Mapper {
         Child child = new Child();
 //        System.out.println(childRequest);
         child.setName(childRequest.getName());
-        child.setDob(childRequest.getDob());
+        child.setDob(LocalDateTime.parse(childRequest.getDob()));
         child.setFatherName(childRequest.getFatherName());
         child.setMotherName(childRequest.getMotherName());
         child.setSex(childRequest.getSex());

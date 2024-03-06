@@ -3,6 +3,8 @@ package com.statvital.StatVital.data.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 public class Child {
@@ -15,7 +17,7 @@ public class Child {
 
     private String motherName;
 
-    private String dob;
+    private LocalDateTime dob;
     private String sex;
     private String referenceId;
     private String age;

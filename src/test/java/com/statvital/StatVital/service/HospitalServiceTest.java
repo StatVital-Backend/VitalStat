@@ -117,7 +117,9 @@ public class HospitalServiceTest {
         sign.setEmail("ph@gmail.com");
         sign.setPassword("password");
         LogInAdminResponse logInAdminResponse = hospitalService.logIn(sign);
+        System.out.println(logInAdminResponse.getToken());
         assertThat(logInAdminResponse.isLoggedIn(), is(true));
+
 
 
     }

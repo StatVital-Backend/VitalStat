@@ -6,15 +6,16 @@ import com.statvital.StatVital.config.AppConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-@Service
-public class JwtTokenImpl implements JwtToken{
-    private static final String SECRET_KEY = AppConfig.DEFAULT_SECRET_KEY;
+@Component
+public class JwtTokenImpl{
+    @Value("${jwt.token.key}")
+    private String SECRET_KEY;
     private static final long EXPIRATION_TIME = 3600000;
 
-    @Override
+//    @Override
     public String generateToken(String email, String password) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + EXPIRATION_TIME);
@@ -29,16 +30,14 @@ public class JwtTokenImpl implements JwtToken{
 
     }
 
-    @Override
+//    @Override
     public String verifyToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(SECRET_KEY)
-                .build()
                 .parseClaimsJws(token)
                 .getBody();
 
 
-        //        String password = claims.ge
         return claims.getSubject();
     }
 

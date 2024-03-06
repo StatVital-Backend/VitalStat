@@ -29,6 +29,7 @@ public class HospitalServiceImpl implements HospitalService{
     private final ChildRepository childRepository;
     private final ChildService childService;
     private final JwtTokenImpl jwtToken;
+    private HospitalAdmin loggedIn;
 //    private final ConfirmationRepo confirmationRepo;
 
     @Override
@@ -42,14 +43,18 @@ public class HospitalServiceImpl implements HospitalService{
         HospitalAdmin hospitalAdmin = getAdmin(request.getFacilityName());
         validatePassword(request, hospitalAdmin);
 
+        loggedIn = hospitalAdmin;
 
         hospitalAdmin.setLoggedIn(true);
         HospitalAdmin hospitalAdmin1 = hospitalAdminRepo.save(hospitalAdmin);
 
-        //call jwt
+        String token = jwtToken.generateToken(hospitalAdmin1.getEmail(), hospitalAdmin1.getPassword());
+        String verifiedToken = jwtToken.verifyToken(String.valueOf(hospitalAdmin1.getEmail().equals(token)));
+
 
         LogInAdminResponse logInAdminResponse = new LogInAdminResponse();
         logInAdminResponse.setMessage("Login Successful");
+        logInAdminResponse.setToken(token);
         logInAdminResponse.setLoggedIn(hospitalAdmin1.isLoggedIn());
         logInAdminResponse.setLogInDate(String.valueOf(LocalDateTime.now()));
 
@@ -59,7 +64,8 @@ public class HospitalServiceImpl implements HospitalService{
 
     @Override
     public RegisterChildResponse registerChild(ChildRequest childRequest) {
-        findRegisteredChild(childRequest.getId());
+        ensureLoggedIn();
+//        findRegisteredChild(childRequest.getId());
 
         childService.registerChild(childRequest);
         RegisterChildResponse response = new RegisterChildResponse();
@@ -92,12 +98,8 @@ public class HospitalServiceImpl implements HospitalService{
     public Child updateChildInfo(UpdateChildReq updateChildReq) {
         Child child = findChild(updateChildReq.getName());
 
-        // Update child's information
         child.setName(updateChildReq.getName());
         child.setAge(updateChildReq.getAge());
-        // Update other fields as needed
-
-        // Save the updated child information
         childRepository.save(child);
 
         return child;
@@ -111,6 +113,13 @@ public class HospitalServiceImpl implements HospitalService{
             throw new ChildNotFound("Child not found");
         }
         return childOptional.get();
+    }
+
+    private void ensureLoggedIn() {
+
+        if (loggedIn == null || !loggedIn.isLoggedIn()) {
+            throw new NotLoggedInException("User is not logged in");
+        }
     }
 
 

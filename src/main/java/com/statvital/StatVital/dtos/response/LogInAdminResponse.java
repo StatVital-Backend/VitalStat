@@ -8,4 +8,5 @@ public class LogInAdminResponse {
     private String logInDate;
     private String message;
     private boolean isLoggedIn;
+    private String token;
 }

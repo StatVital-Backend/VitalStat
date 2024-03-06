@@ -6,9 +6,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
+import org.springframework.stereotype.Service;
 
 @Data
 @Entity
+@Service
 public class HospitalAdmin {
 
     @Id
