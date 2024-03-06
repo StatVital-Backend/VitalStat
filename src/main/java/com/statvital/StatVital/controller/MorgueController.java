@@ -1,9 +1,11 @@
 package com.statvital.StatVital.controller;
 
 
+import com.statvital.StatVital.dtos.request.DeathReq;
 import com.statvital.StatVital.dtos.request.SignInMorgueRequest;
 import com.statvital.StatVital.dtos.request.SignUpMorgueRequest;
 import com.statvital.StatVital.dtos.response.LogInMorgueResponse;
+import com.statvital.StatVital.dtos.response.RegisterDeathResponse;
 import com.statvital.StatVital.dtos.response.SignUpMorgueResponse;
 import com.statvital.StatVital.services.MorgueService;
 import lombok.AllArgsConstructor;
@@ -40,6 +42,18 @@ public class MorgueController {
             LogInMorgueResponse response = new LogInMorgueResponse();
             return response;
         }
+    }
+    @PostMapping("/RegisterDeath")
+    public RegisterDeathResponse registerDeath(@RequestBody DeathReq deathReq){
+        try{
+            RegisterDeathResponse register = morgueService.registerBody(deathReq);
+            return register;
+
+        }catch (Exception e){
+            RegisterDeathResponse error = new RegisterDeathResponse();
+            return error;
+        }
+
     }
 
 }

@@ -10,6 +10,7 @@ import com.statvital.StatVital.data.repository.HospitalAdminRepo;
 import com.statvital.StatVital.dtos.request.*;
 import com.statvital.StatVital.dtos.response.LogInAdminResponse;
 import com.statvital.StatVital.dtos.response.RegisterChildResponse;
+import com.statvital.StatVital.dtos.response.RegisterDeathResponse;
 import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
 import com.statvital.StatVital.exceptions.*;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,9 @@ public class HospitalServiceImpl implements HospitalService{
     private final HospitalAdminRepo hospitalAdminRepo;
     private final ChildRepository childRepository;
     private final ChildService childService;
-    private final JwtTokenImpl jwtToken;
+    private final DeathService deathService;
+//    private final JwtTokenImpl jwtToken;
+//    private HospitalAdmin loggedIn;
 //    private final ConfirmationRepo confirmationRepo;
 
     @Override
@@ -42,14 +45,18 @@ public class HospitalServiceImpl implements HospitalService{
         HospitalAdmin hospitalAdmin = getAdmin(request.getFacilityName());
         validatePassword(request, hospitalAdmin);
 
+//        loggedIn = hospitalAdmin;
 
         hospitalAdmin.setLoggedIn(true);
         HospitalAdmin hospitalAdmin1 = hospitalAdminRepo.save(hospitalAdmin);
+//
+//        String token = jwtToken.generateToken(hospitalAdmin1.getEmail(), hospitalAdmin1.getPassword());
+//        String verifiedToken = jwtToken.verifyToken(String.valueOf(hospitalAdmin1.getEmail().equals(token)));
 
-        //call jwt
 
         LogInAdminResponse logInAdminResponse = new LogInAdminResponse();
         logInAdminResponse.setMessage("Login Successful");
+//        logInAdminResponse.setToken(token);
         logInAdminResponse.setLoggedIn(hospitalAdmin1.isLoggedIn());
         logInAdminResponse.setLogInDate(String.valueOf(LocalDateTime.now()));
 
@@ -59,7 +66,15 @@ public class HospitalServiceImpl implements HospitalService{
 
     @Override
     public RegisterChildResponse registerChild(ChildRequest childRequest) {
-        findRegisteredChild(childRequest.getId());
+//        logIn(token);
+//
+//        ensureLoggedIn(token);
+//        boolean isTokenValid = Boolean.parseBoolean(jwtToken.verifyToken(toString()));
+//
+//        if (!isTokenValid) {
+//            throw new InvalidTokenException("Invalid token");
+//        }
+        findRegisteredChild(generateReferenceId());
 
         childService.registerChild(childRequest);
         RegisterChildResponse response = new RegisterChildResponse();
@@ -69,6 +84,17 @@ public class HospitalServiceImpl implements HospitalService{
 
         return response;
     }
+
+    @Override
+    public RegisterDeathResponse registerBody(DeathReq deathReq) {
+        deathService.registerDeath(deathReq);
+        RegisterDeathResponse response = new RegisterDeathResponse();
+        response.setMessage("Successfully Registered ");
+        response.setDateRegistered(LocalDateTime.now());
+        response.setId(generateReferenceId());
+        return response;
+    }
+
 
     private void findRegisteredChild(String referenceId) {
         Optional<Child>child = childRepository.findChildByReferenceId(referenceId);
@@ -92,18 +118,13 @@ public class HospitalServiceImpl implements HospitalService{
     public Child updateChildInfo(UpdateChildReq updateChildReq) {
         Child child = findChild(updateChildReq.getName());
 
-        // Update child's information
         child.setName(updateChildReq.getName());
         child.setAge(updateChildReq.getAge());
-        // Update other fields as needed
-
-        // Save the updated child information
         childRepository.save(child);
 
         return child;
     }
 
-    // Other methods...
 
     private Child findChild(String id) {
         Optional<Child> childOptional = childRepository.findChildByReferenceId(id);
@@ -112,6 +133,13 @@ public class HospitalServiceImpl implements HospitalService{
         }
         return childOptional.get();
     }
+
+//    private void ensureLoggedIn(String token) {
+//
+//        if (loggedIn == null || !loggedIn.isLoggedIn()) {
+//            throw new NotLoggedInException("User is not logged in");
+//        }
+//    }
 
 
 //    @Override
