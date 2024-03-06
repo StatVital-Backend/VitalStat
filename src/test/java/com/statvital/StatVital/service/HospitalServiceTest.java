@@ -4,15 +4,14 @@ package com.statvital.StatVital.service;
 import com.statvital.StatVital.data.model.HospitalAdmin;
 import com.statvital.StatVital.data.repository.ChildRepository;
 import com.statvital.StatVital.data.repository.HospitalAdminRepo;
-import com.statvital.StatVital.dtos.request.ChildRequest;
-import com.statvital.StatVital.dtos.request.DeleteChildReq;
-import com.statvital.StatVital.dtos.request.SignInHospitalRequest;
-import com.statvital.StatVital.dtos.request.SignUpHospitalAdminRequest;
+import com.statvital.StatVital.dtos.request.*;
 import com.statvital.StatVital.dtos.response.LogInAdminResponse;
+import com.statvital.StatVital.dtos.response.SendMailResponse;
 import com.statvital.StatVital.exceptions.HospitalAlreadyExist;
 import com.statvital.StatVital.exceptions.IncorrectCredentials;
 import com.statvital.StatVital.services.ChildService;
 import com.statvital.StatVital.services.HospitalService;
+import com.statvital.StatVital.services.MailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 //import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
@@ -38,6 +37,8 @@ public class HospitalServiceTest {
     private ChildService childService;
     @Autowired
     private ChildRepository childRepository;
+    @Autowired
+    private MailService mailService;
     @BeforeEach
     public void doThis(){
         hospitalAdminRepo.deleteAll();
@@ -275,9 +276,30 @@ public class HospitalServiceTest {
         hospitalService.registerChild(childRequest);
         assertThat(childRepository.count(), is(1L));
 
-        
-
     }
+//    @Test
+//    public void testSendMail(){
+//        SendMailRequest mailRequest = buildMailRequest();
+//        SendMailResponse response = mailService.sendMail(mailRequest);
+//        assertNotNull(response);
+//        assertEquals(201, response.getStatusCode());
+//    }
+//
+//    private static SendMailRequest buildMailRequest() {
+//        //1. Create mail sending request
+//        SendMailRequest mailRequest = new SendMailRequest();
+//        //2. Create Sender
+//        Sender sender = new Sender("StatVital", "statvital@gmail.com");
+//        //3. Create Recipient Collection
+//        List<Recipient> recipients = List.of(
+//                new Recipient("Welcome to StatVital", "o.ugbochinedu@gmail .com")
+//        );
+//        mailRequest.setSubject("Stat-Vital");
+//        mailRequest.setHtmlContent("<p>Hello Chinedu</p>");
+//        mailRequest.setSender(sender);
+//        mailRequest.setRecipients(recipients);
+//        return mailRequest;
+//    }
 
 
 

@@ -1,23 +1,25 @@
 package com.statvital.StatVital.services;
 
+import com.statvital.StatVital.data.model.Child;
+import com.statvital.StatVital.data.model.Death;
 import com.statvital.StatVital.data.model.HospitalAdmin;
 import com.statvital.StatVital.data.model.MorgueAdmin;
 import com.statvital.StatVital.data.repository.MorgueAdminRepo;
+import com.statvital.StatVital.dtos.request.DeathReq;
 import com.statvital.StatVital.dtos.request.SignInMorgueRequest;
 import com.statvital.StatVital.dtos.request.SignUpMorgueRequest;
 import com.statvital.StatVital.dtos.response.LogInAdminResponse;
 import com.statvital.StatVital.dtos.response.LogInMorgueResponse;
+import com.statvital.StatVital.dtos.response.RegisterDeathResponse;
 import com.statvital.StatVital.dtos.response.SignUpMorgueResponse;
-import com.statvital.StatVital.exceptions.HospitalAlreadyExist;
-import com.statvital.StatVital.exceptions.HospitalNotFound;
-import com.statvital.StatVital.exceptions.IncorrectCredentials;
-import com.statvital.StatVital.exceptions.MorgueAlreadyExist;
+import com.statvital.StatVital.exceptions.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.statvital.StatVital.utils.Mapper.generateReferenceId;
 import static com.statvital.StatVital.utils.MorgueMapper.mapper;
 import static com.statvital.StatVital.utils.MorgueMapper.morgueMap;
 
@@ -26,6 +28,7 @@ import static com.statvital.StatVital.utils.MorgueMapper.morgueMap;
 public class MorgueServiceImpl implements MorgueService{
 
     private final MorgueAdminRepo morgueAdminRepo;
+    private final DeathService deathService;
 
     @Override
     public SignUpMorgueResponse signup(SignUpMorgueRequest request) {
@@ -68,6 +71,23 @@ public class MorgueServiceImpl implements MorgueService{
         Optional<MorgueAdmin> admin = morgueAdminRepo.findMorgueAdminByFacilityName(facilityName);
         if(admin.isPresent())
             throw new MorgueAlreadyExist("Morgue Already Exist");
+    }
+
+    @Override
+    public RegisterDeathResponse registerBody(DeathReq deathReq) {
+        deathService.registerDeath(deathReq);
+        RegisterDeathResponse response = new RegisterDeathResponse();
+        response.    setMessage("Successfully Registered ");
+        response.setDateRegistered(LocalDateTime.now());
+        response.setId(generateReferenceId());
+        return response;
+    }
+
+    @Override
+    public Death searchDeath(String name) {
+        Optional<Death> death = deathService.findBody(name);
+        if (death.isEmpty()) throw new ChildNotFound("Corpse not found");
+        return death.get();
     }
 
 

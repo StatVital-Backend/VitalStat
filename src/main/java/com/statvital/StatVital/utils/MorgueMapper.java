@@ -1,7 +1,11 @@
 package com.statvital.StatVital.utils;
 
+import com.statvital.StatVital.data.model.Child;
+import com.statvital.StatVital.data.model.Death;
 import com.statvital.StatVital.data.model.HospitalAdmin;
 import com.statvital.StatVital.data.model.MorgueAdmin;
+import com.statvital.StatVital.dtos.request.ChildRequest;
+import com.statvital.StatVital.dtos.request.DeathReq;
 import com.statvital.StatVital.dtos.request.SignUpMorgueRequest;
 import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
 import com.statvital.StatVital.dtos.response.SignUpMorgueResponse;
@@ -28,5 +32,17 @@ public class MorgueMapper {
 
 
         return response;
+    }
+    public static Death mapDeath(DeathReq deathReq){
+        Death death = new Death();
+
+         death.setDeceasedName(deathReq.getDeceasedName());
+         death.setAge(death.getAge());
+         death.setGender(death.getGender());
+         death.setCauseOfDeath(death.getCauseOfDeath());
+         death.setReceiver(death.getReceiver());
+         death.setBroughtBy(death.getBroughtBy());
+
+        return death;
     }
 }
