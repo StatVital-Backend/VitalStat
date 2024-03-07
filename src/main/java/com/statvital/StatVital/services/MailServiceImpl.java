@@ -3,12 +3,11 @@ package com.statvital.StatVital.services;
 import com.statvital.StatVital.config.AppConfig;
 import com.statvital.StatVital.dtos.request.SendMailRequest;
 import com.statvital.StatVital.dtos.response.SendMailResponse;
+import com.statvital.StatVital.exceptions.MailServiceException;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
@@ -25,10 +24,25 @@ public class MailServiceImpl implements MailService{
 
     @Override
     public SendMailResponse sendMail(SendMailRequest mailRequest) {
-        HttpHeaders headers = addRequestHeaders();
-        RequestEntity<SendMailRequest> requestEntity = new RequestEntity<>(mailRequest, headers, POST, URI.create(appConfig.getMailServiceUrl()));
-        ResponseEntity<SendMailResponse> mailResponse =restTemplate.postForEntity(appConfig.getMailServiceUrl(), requestEntity,SendMailResponse.class);
-        return buildSendMailResponse(mailResponse);
+        try {
+            HttpHeaders headers = addRequestHeaders();
+            RequestEntity<SendMailRequest> requestEntity = new RequestEntity<>(mailRequest, headers, POST, URI.create(appConfig.getMailServiceUrl()));
+            ResponseEntity<SendMailResponse> mailResponse = restTemplate.postForEntity(appConfig.getMailServiceUrl(), requestEntity, SendMailResponse.class);
+            return buildSendMailResponse(mailResponse);
+        } catch (HttpClientErrorException ex) {
+            if (ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                String responseBody = ex.getResponseBodyAsString();
+                // Handle the response body indicating the invalid parameter
+                throw new MailServiceException("Bad Request: " + responseBody);
+            } else {
+                // Handle other HttpClientErrorException cases
+                throw ex;
+            }
+        }
+//        HttpHeaders headers = addRequestHeaders();
+//        RequestEntity<SendMailRequest> requestEntity = new RequestEntity<>(mailRequest, headers, POST, URI.create(appConfig.getMailServiceUrl()));
+//        ResponseEntity<SendMailResponse> mailResponse =restTemplate.postForEntity(appConfig.getMailServiceUrl(), requestEntity,SendMailResponse.class);
+//        return buildSendMailResponse(mailResponse);
 
     }
 
