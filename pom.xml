@@ -23,10 +23,16 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+<!--		<dependency>-->
+<!--			<groupId>org.postgresql</groupId>-->
+<!--			<artifactId>postgresql</artifactId>-->
+<!--			<version>42.7.1</version>-->
+<!--		</dependency>-->
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.7.1</version>
+			<scope>runtime</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/javax.mail/javax.mail-api -->
 		<dependency>
@@ -40,12 +46,7 @@
 			<artifactId>spring-security-oauth2-client</artifactId>
 			<version>6.2.2</version>
 		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.10.2</version>
-			<scope>test</scope>
-		</dependency>
+
 
 		<!--		&lt;!&ndash; https://mvnrepository.com/artifact/com.auth0/java-jwt &ndash;&gt;-->
 <!--		<dependency>-->
@@ -86,11 +87,6 @@
 <!--			<artifactId>mysql-connector-j</artifactId>-->
 <!--			<version>8.2.0</version>-->
 <!--		</dependency>-->
-
-
-
-
-
 
 		<!--		<dependency>-->
 <!--			<groupId>org.hibernate.orm</groupId>-->
