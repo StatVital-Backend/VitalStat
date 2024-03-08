@@ -6,6 +6,7 @@ import com.statvital.StatVital.dtos.response.SendMailResponse;
 import com.statvital.StatVital.exceptions.MailServiceException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -18,6 +19,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Service
 @AllArgsConstructor
+
 public class MailServiceImpl implements MailService{
     private final RestTemplate restTemplate;
     private final AppConfig appConfig;

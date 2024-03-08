@@ -30,6 +30,7 @@ public class HospitalServiceImpl implements HospitalService{
     private final ChildRepository childRepository;
     private final ChildService childService;
     private final DeathService deathService;
+    private final MailService mailService;
 //    private final JwtTokenImpl jwtToken;
 //    private HospitalAdmin loggedIn;
 //    private final ConfirmationRepo confirmationRepo;
@@ -37,7 +38,10 @@ public class HospitalServiceImpl implements HospitalService{
     @Override
     public SignInHospitalAdminResponse signup(SignUpHospitalAdminRequest request) {
         findHospital(request.getFacilityName());
+        mailService.sendMail(mailMapper(request));
         return responseMapper(hospitalAdminRepo.save(hospitalMapper(request)));
+
+
     }
 
     @Override

@@ -48,9 +48,9 @@ public class HospitalServiceTest {
     @Test
     public void testThat_An_HospitalAdminCanRegister(){
         SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
-        request.setFacilityName("Kings Court Hospital");
+        request.setFacilityName("General Hospital");
         request.setSector("Public");
-        request.setEmail("kch@gmail.com");
+        request.setEmail("adeekoarekehinde@gmail.com");
         request.setPassword("password");
 
         hospitalService.signup(request);
