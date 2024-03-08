@@ -292,7 +292,7 @@ public class HospitalServiceTest {
         Sender sender = new Sender("StatVital", "statvital99@gmail.com");
         //3. Create Recipient Collection
         List<Recipient> recipients = List.of(
-                new Recipient("Welcome to StatVital", "oluwaseyitemitope69@gmail.com")
+                new Recipient("Welcome to StatVital", "oladejifemi00@gmail.com")
         );
         mailRequest.setSubject("Stat-Vital");
         mailRequest.setHtmlContent("<p>Hello Seyi</p>");
