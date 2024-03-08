@@ -15,6 +15,6 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:17.0.1-jdk-slim
 COPY --from=build /app/target/StatVital-0.0.1-SNAPSHOT.jar app.jar
-EXPOSE 9090
+EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app.jar"]
 
