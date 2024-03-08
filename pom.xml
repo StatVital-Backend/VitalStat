@@ -14,7 +14,7 @@
 	<name>StatVital</name>
 	<description>Project for Spring Boot</description>
 	<properties>
-		<maven.compiler.release>19</maven.compiler.release>
+		<maven.compiler.source>17</maven.compiler.source>
 	</properties>
 	<dependencies>
 		<dependency>
