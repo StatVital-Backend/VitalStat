@@ -7,6 +7,7 @@ import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
 import com.statvital.StatVital.services.MailServiceImpl;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class Mapper {
         Child child = new Child();
 //        System.out.println(childRequest);
         child.setName(childRequest.getName());
-        child.setDob(LocalDateTime.now());
+        child.setDob(LocalDate.now());
         child.setFatherName(childRequest.getFatherName());
         child.setMotherName(childRequest.getMotherName());
         child.setSex(childRequest.getSex());

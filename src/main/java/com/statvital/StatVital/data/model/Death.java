@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
@@ -17,7 +18,7 @@ public class Death {
     private Long id;
     private String receiver;
     private String deceasedName;
-    private LocalDateTime dateTime;
+    private LocalDate dateTime;
     private String causeOfDeath;
     private String broughtBy;
     private String placeOfDeath;
