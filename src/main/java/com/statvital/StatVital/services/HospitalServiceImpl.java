@@ -38,7 +38,7 @@ public class HospitalServiceImpl implements HospitalService{
     @Override
     public SignInHospitalAdminResponse signup(SignUpHospitalAdminRequest request) {
         findHospital(request.getEmail());
-//        mailService.sendMail(mailMapper(request));
+        mailService.sendMail(mailMapper(request));
         return responseMapper(hospitalAdminRepo.save(hospitalMapper(request)));
 
 
