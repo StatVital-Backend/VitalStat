@@ -19,7 +19,7 @@ public interface HospitalService {
     String deleteChildInfo(DeleteChildReq deleteChildReq);
 //    Boolean verifyToken(String token);
 
-    Child searchChild(String searchChildReq);
+    Child searchChild(SearchChildReq searchChildReq);
 
     Child updateChildInfo(UpdateChildReq updateChildReq);
 }

@@ -8,5 +8,5 @@ public class SignInHospitalAdminResponse {
     private String email;
     private String registerDate;
     private String message;
-    private boolean isSuccessful;
+//    private boolean isSuccessful;
 }
