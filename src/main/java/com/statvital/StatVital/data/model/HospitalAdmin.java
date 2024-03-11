@@ -14,7 +14,8 @@ import org.springframework.stereotype.Service;
 public class HospitalAdmin {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private Long id;
     private String email;
     private String username;

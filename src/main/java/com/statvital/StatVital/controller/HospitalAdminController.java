@@ -2,10 +2,7 @@ package com.statvital.StatVital.controller;
 
 
 import com.statvital.StatVital.data.model.Child;
-import com.statvital.StatVital.dtos.request.ChildRequest;
-import com.statvital.StatVital.dtos.request.DeleteChildReq;
-import com.statvital.StatVital.dtos.request.SignInHospitalRequest;
-import com.statvital.StatVital.dtos.request.SignUpHospitalAdminRequest;
+import com.statvital.StatVital.dtos.request.*;
 import com.statvital.StatVital.dtos.response.LogInAdminResponse;
 import com.statvital.StatVital.dtos.response.RegisterChildResponse;
 import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
@@ -14,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "#")
 @RequestMapping("/api/v1")
 @AllArgsConstructor
 public class HospitalAdminController {
@@ -56,7 +54,7 @@ public class HospitalAdminController {
     }
 
     @GetMapping("/Search{name}")
-    public Object searchChildRes (@PathVariable String name){
+    public Object searchChildRes (@PathVariable SearchChildReq name){
         try{
            return hospitalService.searchChild(name);
         }catch (Exception e){

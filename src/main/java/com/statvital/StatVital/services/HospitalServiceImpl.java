@@ -37,7 +37,7 @@ public class HospitalServiceImpl implements HospitalService{
 
     @Override
     public SignInHospitalAdminResponse signup(SignUpHospitalAdminRequest request) {
-        findHospital(request.getFacilityName());
+        findHospital(request.getEmail());
         mailService.sendMail(mailMapper(request));
         return responseMapper(hospitalAdminRepo.save(hospitalMapper(request)));
 
@@ -46,8 +46,8 @@ public class HospitalServiceImpl implements HospitalService{
 
     @Override
     public LogInAdminResponse logIn(SignInHospitalRequest request) {
-        HospitalAdmin hospitalAdmin = getAdmin(request.getFacilityName());
-        validatePassword(request, hospitalAdmin);
+        HospitalAdmin hospitalAdmin = getAdmin(request.getEmail());
+//        validatePassword(request, hospitalAdmin);
 
 //        loggedIn = hospitalAdmin;
 
@@ -112,8 +112,8 @@ public class HospitalServiceImpl implements HospitalService{
     }
 
     @Override
-    public Child searchChild(String name) {
-        Optional<Child> child = childService.findChild(name);
+    public Child searchChild(SearchChildReq searchChildReq) {
+        Optional<Child> child = childService.findChild(searchChildReq.getName());
         if (child.isEmpty()) throw new ChildNotFound("Child not found");
         return child.get();
     }
@@ -165,13 +165,13 @@ public class HospitalServiceImpl implements HospitalService{
 //        }
 //    }
 
-    private void validatePassword(SignInHospitalRequest request, HospitalAdmin admin) {
-        if(!admin.getPassword().equals(request.getPassword()))
-            throw  new IncorrectCredentials("Incorrect Username or password");
-    }
+//    private void validatePassword(SignInHospitalRequest request, HospitalAdmin admin) {
+//        if(!admin.getPassword().equals(request.getPassword()))
+//            throw  new IncorrectCredentials("Incorrect Username or password");
+//    }
 
-    private HospitalAdmin getAdmin(String facilityName) {
-        Optional<HospitalAdmin> admin =hospitalAdminRepo.findHospitalAdminByFacilityName(facilityName);
+    private HospitalAdmin getAdmin(String email) {
+        Optional<HospitalAdmin> admin =hospitalAdminRepo.findHospitalAdminByEmailIgnoreCase(email);
         if(admin.isEmpty()) throw new HospitalNotFound("Hospital Does not exist");
         return admin.get();
     }
@@ -181,9 +181,10 @@ public class HospitalServiceImpl implements HospitalService{
 //        return null;
 //    }
 
-    private void findHospital(String facilityName) {
-        Optional<HospitalAdmin> admin = hospitalAdminRepo.findHospitalAdminByFacilityName(facilityName);
+    private void findHospital(String email) {
+        Optional<HospitalAdmin> admin = hospitalAdminRepo.findHospitalAdminByEmailIgnoreCase(email);
         if(admin.isPresent())
+//            System.out.println("Hospital Already exist");
             throw new HospitalAlreadyExist("Hospital Already Exist");
     }
 

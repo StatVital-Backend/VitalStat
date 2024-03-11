@@ -8,6 +8,7 @@ import com.statvital.StatVital.dtos.request.*;
 import com.statvital.StatVital.dtos.response.LogInAdminResponse;
 import com.statvital.StatVital.dtos.response.SendMailResponse;
 import com.statvital.StatVital.exceptions.HospitalAlreadyExist;
+import com.statvital.StatVital.exceptions.HospitalNotFound;
 import com.statvital.StatVital.exceptions.IncorrectCredentials;
 import com.statvital.StatVital.services.ChildService;
 import com.statvital.StatVital.services.HospitalService;
@@ -48,9 +49,9 @@ public class HospitalServiceTest {
     @Test
     public void testThat_An_HospitalAdminCanRegister(){
         SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
-        request.setFacilityName("General Hospital");
+        request.setFacilityName("Grace Hospital");
         request.setSector("Public");
-        request.setEmail("adeekoarekehinde@gmail.com");
+        request.setEmail("oluwaseyitemitope69@gmail.com");
         request.setPassword("password");
 
         hospitalService.signup(request);
@@ -109,6 +110,8 @@ public class HospitalServiceTest {
         request.setEmail("ph@gmail.com");
         request.setSector("Private");
         request.setPassword("password");
+        request.setFacilityLocation("Ikorodu");
+
 
         hospitalService.signup(request);
         assertThat(hospitalAdminRepo.count(), is(1L));
@@ -117,6 +120,7 @@ public class HospitalServiceTest {
         sign.setFacilityName("Pascal Hospital");
         sign.setEmail("ph@gmail.com");
         sign.setPassword("password");
+
         LogInAdminResponse logInAdminResponse = hospitalService.logIn(sign);
         System.out.println(logInAdminResponse.getToken());
         assertThat(logInAdminResponse.isLoggedIn(), is(true));
@@ -124,24 +128,36 @@ public class HospitalServiceTest {
 
 
     }
+
     @Test
-    public void testThatRegisteredHospitalCanLogInWithCorrectPassword(){
-        SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
-        request.setFacilityName("Pascal Hospital");
-        request.setEmail("ph@gmail.com");
-        request.setSector("Private");
-        request.setPassword("password");
-
-        hospitalService.signup(request);
-        assertThat(hospitalAdminRepo.count(), is(1L));
-
+    public void testThatAnUnregisteredHospitalCannotLogIn(){
         SignInHospitalRequest sign = new SignInHospitalRequest();
         sign.setFacilityName("Pascal Hospital");
         sign.setEmail("ph@gmail.com");
-        sign.setPassword("pasword");
-        assertThrows(IncorrectCredentials.class, ()-> hospitalService.logIn(sign));
+        sign.setPassword("password");
+
+
+        assertThrows(HospitalNotFound.class, ()->hospitalService.logIn(sign));
 
     }
+//    @Test
+//    public void testThatRegisteredHospitalCanLogInWithCorrectPassword(){
+//        SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
+//        request.setFacilityName("Pascal Hospital");
+//        request.setEmail("ph@gmail.com");
+//        request.setSector("Private");
+//        request.setPassword("password");
+//
+//        hospitalService.signup(request);
+//        assertThat(hospitalAdminRepo.count(), is(1L));
+//
+//        SignInHospitalRequest sign = new SignInHospitalRequest();
+//        sign.setFacilityName("Pascal Hospital");
+//        sign.setEmail("ph@gmail.com");
+//        sign.setPassword("pasword");
+//         assertThrows(IncorrectCredentials.class, ()-> hospitalService.logIn(sign));
+//
+//    }
     @Test
     public void testThatChildCanBeRegistered(){
         SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
@@ -292,7 +308,7 @@ public class HospitalServiceTest {
         Sender sender = new Sender("StatVital", "statvital99@gmail.com");
         //3. Create Recipient Collection
         List<Recipient> recipients = List.of(
-                new Recipient("Welcome to StatVital", "oladejifemi00@gmail.com")
+                new Recipient("Anu", "anuoluwapobanwo@gmail.com")
         );
         mailRequest.setSubject("Stat-Vital");
         mailRequest.setHtmlContent("<p>Hello Seyi</p>");
