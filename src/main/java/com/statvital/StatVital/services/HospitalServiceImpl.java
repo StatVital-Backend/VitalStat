@@ -47,6 +47,7 @@ public class HospitalServiceImpl implements HospitalService{
     @Override
     public LogInAdminResponse logIn(SignInHospitalRequest request) {
         HospitalAdmin hospitalAdmin = getAdmin(request.getEmail());
+        System.out.println(hospitalAdmin);
 //        validatePassword(request, hospitalAdmin);
 
 //        loggedIn = hospitalAdmin;
