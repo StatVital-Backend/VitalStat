@@ -10,5 +10,7 @@ public class SignUpHospitalAdminRequest {
     private String email;
     private String password;
     private String sector;
+    private String phoneNumber;
+
 
 }

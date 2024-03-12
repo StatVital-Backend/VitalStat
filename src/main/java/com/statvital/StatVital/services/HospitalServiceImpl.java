@@ -38,7 +38,7 @@ public class HospitalServiceImpl implements HospitalService{
     @Override
     public SignInHospitalAdminResponse signup(SignUpHospitalAdminRequest request) {
         findHospital(request.getEmail());
-        mailService.sendMail(mailMapper(request));
+//        mailService.sendMail(mailMapper(request));
         return responseMapper(hospitalAdminRepo.save(hospitalMapper(request)));
 
 
@@ -46,14 +46,15 @@ public class HospitalServiceImpl implements HospitalService{
 
     @Override
     public LogInAdminResponse logIn(SignInHospitalRequest request) {
-        HospitalAdmin hospitalAdmin = getAdmin(request.getEmail());
+        Optional<HospitalAdmin> hospitalAdmin = getAdmin(request.getEmail());
         System.out.println(hospitalAdmin);
 //        validatePassword(request, hospitalAdmin);
 
 //        loggedIn = hospitalAdmin;
 
-        hospitalAdmin.setLoggedIn(true);
-        HospitalAdmin hospitalAdmin1 = hospitalAdminRepo.save(hospitalAdmin);
+        hospitalAdmin.get().setLoggedIn(true);
+        hospitalAdminRepo.save(hospitalAdmin.get());
+        Optional<HospitalAdmin> hospitalAdmin1 = hospitalAdminRepo.findHospitalAdminByEmailIgnoreCase(request.getEmail());
 //
 //        String token = jwtToken.generateToken(hospitalAdmin1.getEmail(), hospitalAdmin1.getPassword());
 //        String verifiedToken = jwtToken.verifyToken(String.valueOf(hospitalAdmin1.getEmail().equals(token)));
@@ -62,7 +63,7 @@ public class HospitalServiceImpl implements HospitalService{
         LogInAdminResponse logInAdminResponse = new LogInAdminResponse();
         logInAdminResponse.setMessage("Login Successful");
 //        logInAdminResponse.setToken(token);
-        logInAdminResponse.setLoggedIn(hospitalAdmin1.isLoggedIn());
+        logInAdminResponse.setLoggedIn(hospitalAdmin1.get().isLoggedIn());
         logInAdminResponse.setLogInDate(String.valueOf(LocalDateTime.now()));
 
         return logInAdminResponse;
@@ -171,10 +172,12 @@ public class HospitalServiceImpl implements HospitalService{
 //            throw  new IncorrectCredentials("Incorrect Username or password");
 //    }
 
-    private HospitalAdmin getAdmin(String email) {
+    private Optional<HospitalAdmin> getAdmin(String email) {
         Optional<HospitalAdmin> admin =hospitalAdminRepo.findHospitalAdminByEmailIgnoreCase(email);
-        if(admin.isEmpty()) throw new HospitalNotFound("Hospital Does not exist");
-        return admin.get();
+        if(admin.isEmpty())
+            throw new HospitalNotFound("Hospital Does not exist");
+//            return admin.get();
+        return admin;
     }
 
 //    private Optional<HospitalAdmin> retrieveAdmin(String email) {

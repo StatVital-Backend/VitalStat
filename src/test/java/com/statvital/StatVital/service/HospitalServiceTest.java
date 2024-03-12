@@ -49,7 +49,7 @@ public class HospitalServiceTest {
     @Test
     public void testThat_An_HospitalAdminCanRegister(){
         SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
-        request.setFacilityName("Grace Hospital");
+        request.setFacilityName("Lance Hospital");
         request.setSector("Public");
         request.setEmail("oluwaseyitemitope69@gmail.com");
         request.setPassword("password");
