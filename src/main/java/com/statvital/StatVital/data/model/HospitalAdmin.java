@@ -15,7 +15,6 @@ public class HospitalAdmin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-
     private Long id;
     private String email;
     private String username;

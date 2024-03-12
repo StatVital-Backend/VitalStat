@@ -30,7 +30,7 @@ public class Mapper {
         return hospitalAdmin;
     }
 
-    public static SignInHospitalAdminResponse responseMapper(HospitalAdmin hospitalAdmin){
+    public static SignInHospitalAdminResponse  responseMapper(HospitalAdmin hospitalAdmin){
         SignInHospitalAdminResponse response = new SignInHospitalAdminResponse();
         response.setEmail(hospitalAdmin.getEmail());
         response.setRegisterDate(DateTimeFormatter
@@ -87,7 +87,7 @@ public class Mapper {
         sendMailRequest1.setSender(sender);
         sendMailRequest1.setSubject("Welcome to StatVital!!!");
         String name = request.getFacilityName();
-        sendMailRequest1.setHtmlContent(String.format("<p>Hello %s,m <br>Kindly Click here to Login</p>", name));
+        sendMailRequest1.setHtmlContent(String.format("<p>Hello %s, <br>Kindly Click here to Login</p>", name));
         return sendMailRequest1;
     }
 }

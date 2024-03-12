@@ -6,6 +6,7 @@ import com.statvital.StatVital.dtos.response.LogInAdminResponse;
 import com.statvital.StatVital.dtos.response.RegisterDeathResponse;
 import com.statvital.StatVital.dtos.response.RegisterChildResponse;
 import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
+import org.springframework.http.ResponseEntity;
 
 public interface HospitalService {
     SignInHospitalAdminResponse signup(SignUpHospitalAdminRequest request);
