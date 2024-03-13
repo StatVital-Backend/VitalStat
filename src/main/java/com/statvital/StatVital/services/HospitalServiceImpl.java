@@ -95,7 +95,7 @@ public class HospitalServiceImpl implements HospitalService{
     public RegisterDeathResponse registerBody(DeathReq deathReq) {
         deathService.registerDeath(deathReq);
         RegisterDeathResponse response = new RegisterDeathResponse();
-        response.setMessage("Successfully Registered ");
+        response.setMessage("Registered Successfully ");
         response.setDateRegistered(LocalDateTime.now());
         response.setId(generateReferenceId());
         return response;
