@@ -7,10 +7,14 @@ import lombok.Data;
 public class SignUpHospitalAdminRequest {
     private String facilityName;
     private String facilityLocation;
-    private String email;
-    private String password;
     private String sector;
+    private String certificationNumber;
+    private String email;
     private String phoneNumber;
+    private String password;
+
+
+
 
 
 }

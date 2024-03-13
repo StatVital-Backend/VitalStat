@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000/")
+@CrossOrigin(origins = "https://frontend-hvlm.onrender.com/")
 @RequestMapping("/api/v1")
 @AllArgsConstructor
 public class HospitalAdminController {
     private final HospitalService hospitalService;
-    @PostMapping("/signInHospital")
+    @PostMapping("/signUpHospital")
     public ResponseEntity<SignInHospitalAdminResponse> signIn (@RequestBody SignUpHospitalAdminRequest request){
        try{
            SignInHospitalAdminResponse response = hospitalService.signup(request);

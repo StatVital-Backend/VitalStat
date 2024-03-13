@@ -9,7 +9,7 @@ public class GlobalCorsConfiguration implements WebMvcConfigurer {
     public  void addCorsMappings(CorsRegistry registry){
         registry.addMapping("/**")
                 .allowedMethods("POST","PUT", "GET", "PATCH", "DELETE")
-                .allowedOrigins("")
+                .allowedOrigins("https://frontend-hvlm.onrender.com/")
                 .allowedHeaders("*")
                 .allowCredentials(true);
 

@@ -29,22 +29,15 @@ public class MailServiceImpl implements MailService{
         try {
             HttpHeaders headers = addRequestHeaders();
             RequestEntity<SendMailRequest> requestEntity = new RequestEntity<>(mailRequest, headers, POST, URI.create(appConfig.getMailServiceUrl()));
-            ResponseEntity<SendMailResponse> mailResponse = restTemplate.postForEntity(appConfig.getMailServiceUrl(), requestEntity, SendMailResponse.class);
+            ResponseEntity<SendMailResponse> mailResponse = restTemplate.postForEntity("https://api.brevo.com/v3/smtp/email", requestEntity, SendMailResponse.class);
+            mailResponse.getBody();
             return buildSendMailResponse(mailResponse);
-        } catch (HttpClientErrorException ex) {
-            if (ex.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                String responseBody = ex.getResponseBodyAsString();
-                // Handle the response body indicating the invalid parameter
-                throw new MailServiceException("Bad Request: " + responseBody);
-            } else {
-                // Handle other HttpClientErrorException cases
-                throw ex;
-            }
+        } catch (Exception ex) {
+            System.out.println(ex.getStackTrace().toString());
+            SendMailResponse sendMailResponse = new SendMailResponse();
+            sendMailResponse.setMessageId(ex.getMessage());
+            return sendMailResponse;
         }
-//        HttpHeaders headers = addRequestHeaders();
-//        RequestEntity<SendMailRequest> requestEntity = new RequestEntity<>(mailRequest, headers, POST, URI.create(appConfig.getMailServiceUrl()));
-//        ResponseEntity<SendMailResponse> mailResponse =restTemplate.postForEntity(appConfig.getMailServiceUrl(), requestEntity,SendMailResponse.class);
-//        return buildSendMailResponse(mailResponse);
 
     }
 
@@ -60,6 +53,7 @@ public class MailServiceImpl implements MailService{
         var response = mailResponse.getBody();
         if (response==null) throw new RuntimeException("Mail Sending failed");
         response.setStatusCode(code.value());
+
         return response;
     }
 }
