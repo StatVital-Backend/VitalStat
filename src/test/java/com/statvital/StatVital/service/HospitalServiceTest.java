@@ -50,8 +50,8 @@ public class HospitalServiceTest {
     public void testThat_An_HospitalAdminCanRegister(){
         SignUpHospitalAdminRequest request = new SignUpHospitalAdminRequest();
         request.setFacilityName("Lance Hospital");
-        request.setSector("Public");
-        request.setEmail("oluwaseyitemitope69@gmail.com");
+        request.setSector("Private");
+        request.setEmail("ejioforkelvin@gmail.com");
         request.setPassword("password");
 
         hospitalService.signup(request);
