@@ -1,6 +1,7 @@
 package com.statvital.StatVital.service;
 
 
+import com.statvital.StatVital.config.AppConfig;
 import com.statvital.StatVital.data.model.HospitalAdmin;
 import com.statvital.StatVital.data.repository.ChildRepository;
 import com.statvital.StatVital.data.repository.HospitalAdminRepo;
@@ -10,25 +11,33 @@ import com.statvital.StatVital.dtos.response.SendMailResponse;
 import com.statvital.StatVital.exceptions.HospitalAlreadyExist;
 import com.statvital.StatVital.exceptions.HospitalNotFound;
 import com.statvital.StatVital.exceptions.IncorrectCredentials;
-import com.statvital.StatVital.services.ChildService;
-import com.statvital.StatVital.services.HospitalService;
-import com.statvital.StatVital.services.MailService;
+import com.statvital.StatVital.services.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 //import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest
 //@AllArgsConstructor
 public class HospitalServiceTest {
+
 
     @Autowired
     private  HospitalAdminRepo hospitalAdminRepo;
@@ -316,6 +325,7 @@ public class HospitalServiceTest {
         mailRequest.setRecipients(recipients);
         return mailRequest;
     }
+
 
 
 
