@@ -2,6 +2,7 @@ package com.statvital.StatVital.controller;
 
 
 import com.statvital.StatVital.dtos.request.*;
+import com.statvital.StatVital.dtos.response.DataResponse;
 import com.statvital.StatVital.dtos.response.LogInAdminResponse;
 import com.statvital.StatVital.dtos.response.RegisterChildResponse;
 import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
@@ -13,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin(origins = "https://frontend-hvlm.onrender.com/")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1")
 @AllArgsConstructor
 public class HospitalAdminController {
@@ -78,7 +79,8 @@ public class HospitalAdminController {
     public String dataData(){
         try {
             return hospitalService.getChildren().toString();
-        }catch (Exception e){
+
+        } catch (Exception e) {
             return e.getMessage();
         }
     }
