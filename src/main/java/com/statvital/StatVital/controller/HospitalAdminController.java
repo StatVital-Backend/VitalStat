@@ -5,14 +5,12 @@ import com.statvital.StatVital.dtos.request.*;
 import com.statvital.StatVital.dtos.response.LogInAdminResponse;
 import com.statvital.StatVital.dtos.response.RegisterChildResponse;
 import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
+import com.statvital.StatVital.services.DataBaseService;
 import com.statvital.StatVital.services.HospitalService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
 
 @RestController
 @CrossOrigin(origins = "https://frontend-hvlm.onrender.com/")
@@ -20,6 +18,7 @@ import java.util.Arrays;
 @AllArgsConstructor
 public class HospitalAdminController {
     private final HospitalService hospitalService;
+    private final DataBaseService dataBaseService;
     @PostMapping("/signUpHospital")
     public ResponseEntity<SignInHospitalAdminResponse> signIn (@RequestBody SignUpHospitalAdminRequest request){
        try{
@@ -70,6 +69,15 @@ public class HospitalAdminController {
     public String deleteChild(@RequestBody DeleteChildReq deleteChildReq){
         try {
             return hospitalService.deleteChildInfo(deleteChildReq);
+        }catch (Exception e){
+            return e.getMessage();
+        }
+    }
+
+    @GetMapping("/GetData")
+    public String dataData(){
+        try {
+            return hospitalService.getChildren().toString();
         }catch (Exception e){
             return e.getMessage();
         }

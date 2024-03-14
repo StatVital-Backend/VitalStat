@@ -1,6 +1,7 @@
 package com.statvital.StatVital.services;
 
 //import com.statvital.StatVital.data.model.Confirmation;
+import com.statvital.StatVital.config.AppConfig;
 import com.statvital.StatVital.data.model.Child;
 import com.statvital.StatVital.data.model.HospitalAdmin;
 //import com.statvital.StatVital.data.repository.ConfirmationRepo;
@@ -8,15 +9,13 @@ import com.statvital.StatVital.data.model.HospitalAdmin;
 import com.statvital.StatVital.data.repository.ChildRepository;
 import com.statvital.StatVital.data.repository.HospitalAdminRepo;
 import com.statvital.StatVital.dtos.request.*;
-import com.statvital.StatVital.dtos.response.LogInAdminResponse;
-import com.statvital.StatVital.dtos.response.RegisterChildResponse;
-import com.statvital.StatVital.dtos.response.RegisterDeathResponse;
-import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
+import com.statvital.StatVital.dtos.response.*;
 import com.statvital.StatVital.exceptions.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 //import static com.statvital.StatVital.data.repository.ChildRepository.children;
@@ -31,6 +30,9 @@ public class HospitalServiceImpl implements HospitalService{
     private final ChildService childService;
     private final DeathService deathService;
     private final MailService mailService;
+    private final AppConfig appConfig;
+
+//    private final Connection connection;
 //    private final JwtTokenImpl jwtToken;
 //    private HospitalAdmin loggedIn;
 //    private final ConfirmationRepo confirmationRepo;
@@ -129,6 +131,11 @@ public class HospitalServiceImpl implements HospitalService{
         childRepository.save(child);
 
         return child;
+    }
+
+    @Override
+    public List<HospitalAdmin> getChildren() {
+        return hospitalAdminRepo.findAll();
     }
 
 

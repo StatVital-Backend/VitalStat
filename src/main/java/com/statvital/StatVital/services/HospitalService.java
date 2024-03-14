@@ -1,12 +1,11 @@
 package com.statvital.StatVital.services;
 
 import com.statvital.StatVital.data.model.Child;
+import com.statvital.StatVital.data.model.HospitalAdmin;
 import com.statvital.StatVital.dtos.request.*;
-import com.statvital.StatVital.dtos.response.LogInAdminResponse;
-import com.statvital.StatVital.dtos.response.RegisterDeathResponse;
-import com.statvital.StatVital.dtos.response.RegisterChildResponse;
-import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
-import org.springframework.http.ResponseEntity;
+import com.statvital.StatVital.dtos.response.*;
+
+import java.util.List;
 
 public interface HospitalService {
     SignInHospitalAdminResponse signup(SignUpHospitalAdminRequest request);
@@ -23,4 +22,7 @@ public interface HospitalService {
     Child searchChild(SearchChildReq searchChildReq);
 
     Child updateChildInfo(UpdateChildReq updateChildReq);
+
+    List<HospitalAdmin> getChildren();
+
 }

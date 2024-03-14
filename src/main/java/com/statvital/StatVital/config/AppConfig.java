@@ -18,6 +18,18 @@ public class AppConfig {
     private String mailApiKey;
     @Value("${mail.api.url}")
     private String mailServiceUrl;
+
+    @Value("${DB_URL}")
+    private String DB_URL;
+
+    @Value("${DB_USER}")
+    private String DB_USER;
+
+    @Value("${DB_PASSWORD}")
+    private String DB_PASSWORD;
+
+    @Value("${DB_TABLE}")
+    private String TABLE;
 //    @Value("${DEFAULT_SECRET_KEY}")
 //    private String DEFAULT_SECRET_KEY;
 
