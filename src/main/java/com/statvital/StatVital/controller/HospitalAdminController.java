@@ -67,16 +67,16 @@ public class HospitalAdminController {
         }
     }
 
-//    @GetMapping("/Find")
-//    public Object findChildRes(@RequestBody SearchChildReq name){
-//        System.out.println("I m searching for..." + name);
-//        try{
-//           return hospitalService.findChild(name);
-//        }catch (Exception e){
-//            return e.getMessage();
-//        }
-//
-//    }
+    @GetMapping("/Find")
+    public Object findChildRes(@RequestBody SearchChildReq name){
+        System.out.println("I m searching for..." + name);
+        try{
+           return hospitalService.findChild(name);
+        }catch (Exception e){
+            return e.getMessage();
+        }
+
+    }
 
     @GetMapping("/search")
     public Object searchChildRes(@RequestBody SearchChildReq name){
