@@ -14,4 +14,6 @@ public interface ChildRepository extends JpaRepository<Child, Long> {
 
     Optional<Child> findChildByReferenceId(String referenceId);
 
+    List<Child>findChildByNameIsContaining(String name);
+
 }

@@ -2,10 +2,7 @@ package com.statvital.StatVital.controller;
 
 
 import com.statvital.StatVital.dtos.request.*;
-import com.statvital.StatVital.dtos.response.DataResponse;
-import com.statvital.StatVital.dtos.response.LogInAdminResponse;
-import com.statvital.StatVital.dtos.response.RegisterChildResponse;
-import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
+import com.statvital.StatVital.dtos.response.*;
 import com.statvital.StatVital.services.DataBaseService;
 import com.statvital.StatVital.services.HospitalService;
 import lombok.AllArgsConstructor;
@@ -24,11 +21,14 @@ public class HospitalAdminController {
     public ResponseEntity<SignInHospitalAdminResponse> signIn (@RequestBody SignUpHospitalAdminRequest request){
        try{
            SignInHospitalAdminResponse response = hospitalService.signup(request);
+           response.setMessage(response.getMessage());
            return new ResponseEntity<>(response, HttpStatus.OK);
        }catch (Exception error){
            SignInHospitalAdminResponse signInHospitalAdminResponse  = new SignInHospitalAdminResponse();
            signInHospitalAdminResponse.setMessage(error.getMessage());
-           return new ResponseEntity<>(signInHospitalAdminResponse, HttpStatus.NOT_IMPLEMENTED);
+
+
+           return new ResponseEntity<>(signInHospitalAdminResponse, HttpStatus.BAD_REQUEST);
        }
     }
 
@@ -54,17 +54,40 @@ public class HospitalAdminController {
             return errorResponse;
         }
     }
+    @PostMapping("/registerDeath")
+    public RegisterDeathResponse registerDeath(@RequestBody DeathReq deathReq){
 
-    @PostMapping("/Search")
-    public Object searchChildRes (@RequestBody SearchChildReq name){
-        System.out.println("I m searching for..." + name);
         try{
-           return hospitalService.searchChild(name);
+            RegisterDeathResponse deathResponse = hospitalService.registerBody(deathReq);
+            return deathResponse;
+
+        }catch (Exception error){
+            RegisterDeathResponse errorResponse = new RegisterDeathResponse();
+            return errorResponse;
+        }
+    }
+
+//    @GetMapping("/Find")
+//    public Object findChildRes(@RequestBody SearchChildReq name){
+//        System.out.println("I m searching for..." + name);
+//        try{
+//           return hospitalService.findChild(name);
+//        }catch (Exception e){
+//            return e.getMessage();
+//        }
+//
+//    }
+
+    @GetMapping("/search")
+    public Object searchChildRes(@RequestBody SearchChildReq name){
+        try{
+            return hospitalService.searchChild(name);
         }catch (Exception e){
             return e.getMessage();
         }
 
     }
+
 
     @DeleteMapping("/DeleteChild")
     public String deleteChild(@RequestBody DeleteChildReq deleteChildReq){
