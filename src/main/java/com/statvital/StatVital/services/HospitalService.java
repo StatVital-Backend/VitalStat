@@ -2,6 +2,7 @@ package com.statvital.StatVital.services;
 
 import com.statvital.StatVital.data.model.Child;
 import com.statvital.StatVital.data.model.Death;
+import com.statvital.StatVital.data.model.HospitalAdmin;
 import com.statvital.StatVital.dtos.request.*;
 import com.statvital.StatVital.dtos.response.*;
 
@@ -29,7 +30,7 @@ public interface HospitalService {
    List<Death> hosSearchDeceased(SearchDeathRequest searchDeathRequest);
 
    List<Death> getAllDeceasedInfo();
-    List<Child> getChildren();
+//    List<Child> getChildren();
     List<HospitalAdmin> getChildren();
 
 }

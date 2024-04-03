@@ -1,19 +1,24 @@
 package com.statvital.StatVital.services;
 
 //import com.statvital.StatVital.data.model.Confirmation;
+
 import com.statvital.StatVital.config.AppConfig;
 import com.statvital.StatVital.data.model.Child;
 import com.statvital.StatVital.data.model.Death;
 import com.statvital.StatVital.data.model.HospitalAdmin;
-//import com.statvital.StatVital.data.repository.ConfirmationRepo;
-//import com.statvital.StatVital.data.repository.ConfirmationRepo;
 import com.statvital.StatVital.data.repository.ChildRepository;
 import com.statvital.StatVital.data.repository.DeathRepo;
 import com.statvital.StatVital.data.repository.HospitalAdminRepo;
 import com.statvital.StatVital.data.repository.HospitalDeathRepo;
 import com.statvital.StatVital.dtos.request.*;
-import com.statvital.StatVital.dtos.response.*;
-import com.statvital.StatVital.exceptions.*;
+import com.statvital.StatVital.dtos.response.LogInAdminResponse;
+import com.statvital.StatVital.dtos.response.RegisterChildResponse;
+import com.statvital.StatVital.dtos.response.RegisterDeathResponse;
+import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
+import com.statvital.StatVital.exceptions.ChildExist;
+import com.statvital.StatVital.exceptions.ChildNotFound;
+import com.statvital.StatVital.exceptions.HospitalAlreadyExist;
+import com.statvital.StatVital.exceptions.HospitalNotFound;
 import com.statvital.StatVital.security.services.SecureUser;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,13 +28,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-//import static com.statvital.StatVital.data.repository.ChildRepository.children;
-//import static com.statvital.StatVital.data.repository.HospitalAdminRepo.children;
 import static com.statvital.StatVital.utils.Mapper.*;
 
 @Service
