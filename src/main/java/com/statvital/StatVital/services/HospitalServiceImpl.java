@@ -3,15 +3,23 @@ package com.statvital.StatVital.services;
 //import com.statvital.StatVital.data.model.Confirmation;
 import com.statvital.StatVital.config.AppConfig;
 import com.statvital.StatVital.data.model.Child;
+import com.statvital.StatVital.data.model.Death;
 import com.statvital.StatVital.data.model.HospitalAdmin;
 //import com.statvital.StatVital.data.repository.ConfirmationRepo;
 //import com.statvital.StatVital.data.repository.ConfirmationRepo;
 import com.statvital.StatVital.data.repository.ChildRepository;
+import com.statvital.StatVital.data.repository.DeathRepo;
 import com.statvital.StatVital.data.repository.HospitalAdminRepo;
+import com.statvital.StatVital.data.repository.HospitalDeathRepo;
 import com.statvital.StatVital.dtos.request.*;
 import com.statvital.StatVital.dtos.response.*;
 import com.statvital.StatVital.exceptions.*;
+import com.statvital.StatVital.security.services.SecureUser;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -26,13 +34,17 @@ import static com.statvital.StatVital.utils.Mapper.*;
 
 @Service
 @AllArgsConstructor
-public class HospitalServiceImpl implements HospitalService{
+public class HospitalServiceImpl implements HospitalService, UserDetailsService {
     private final HospitalAdminRepo hospitalAdminRepo;
     private final ChildRepository childRepository;
     private final ChildService childService;
     private final DeathService deathService;
     private final MailService mailService;
     private final AppConfig appConfig;
+    private final DeathRepo deathRepo;
+    private final HospitalDeathRepo hospitalDeathRepo;
+//    private final JwtConfig jwtConfig;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
 //    private final Connection connection;
 //    private final JwtTokenImpl jwtToken;
@@ -51,6 +63,21 @@ public class HospitalServiceImpl implements HospitalService{
     @Override
     public LogInAdminResponse logIn(SignInHospitalRequest request) {
         Optional<HospitalAdmin> hospitalAdmin = getAdmin(request.getEmail());
+        if (hospitalAdmin.isEmpty()) {
+            LogInAdminResponse logInAdminResponse = new LogInAdminResponse();
+            logInAdminResponse.setMessage("Hospital Not Found");
+            logInAdminResponse.setLogInDate(String.valueOf(LocalDateTime.now()));
+            return logInAdminResponse;
+        }
+        if (!(bCryptPasswordEncoder.matches(request.getPassword(), hospitalAdmin.get().getPassword()))) {
+            LogInAdminResponse logInAdminResponse = new LogInAdminResponse();
+            logInAdminResponse.setMessage("Incorrect password");
+            logInAdminResponse.setLogInDate(String.valueOf(LocalDateTime.now()));
+            return logInAdminResponse;
+//            throw new IllegalArgumentException("Incorrect password");
+        }
+//        String token = generateToken(hospitalAdmin.get().getEmail());
+//        System.out.println(token);
         System.out.println(hospitalAdmin);
 //        validatePassword(request, hospitalAdmin);
 
@@ -63,6 +90,12 @@ public class HospitalServiceImpl implements HospitalService{
 //        String token = jwtToken.generateToken(hospitalAdmin1.getEmail(), hospitalAdmin1.getPassword());
 //        String verifiedToken = jwtToken.verifyToken(String.valueOf(hospitalAdmin1.getEmail().equals(token)));
 
+        HospitalAdmin hos = hospitalAdminRepo.saveAndFlush(hospitalAdmin.get());
+//        Optional<HospitalAdmin> hospitalAdmin1 = hospitalAdminRepo.findHospitalAdminByEmailIgnoreCase(request.getEmail());
+        //
+        //        String token = jwtToken.generateToken(hospitalAdmin1.getEmail(), hospitalAdmin1.getPassword());
+        //        String verifiedToken = jwtToken.verifyToken(String.valueOf(hospitalAdmin1.getEmail().equals(token)));
+        System.out.println(hos);
 
         LogInAdminResponse logInAdminResponse = new LogInAdminResponse();
         logInAdminResponse.setMessage("Login Successful");
@@ -73,9 +106,26 @@ public class HospitalServiceImpl implements HospitalService{
         return logInAdminResponse;
 
     }
+//    private String generateToken(String email) {
+//        return Jwts.builder()
+//                .setSubject(email)
+//                .setIssuedAt(new Date())
+//                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getJwtDuration()))
+//                .signWith(SignatureAlgorithm.HS512, jwtConfig.getJwtSecretKey())
+//                .compact();
+//    }
+
+
+
 
     @Override
     public RegisterChildResponse registerChild(ChildRequest childRequest) {
+//        if (!isLoggedIn()) {
+//            RegisterChildResponse response = new RegisterChildResponse();
+//            response.setMessage("Kindly Login or SignUp.");
+//            return response;
+//        }
+
 //        logIn(token);
 //
 //        ensureLoggedIn(token);
@@ -94,6 +144,25 @@ public class HospitalServiceImpl implements HospitalService{
 
         return response;
     }
+//    private boolean isLoggedIn() {
+//        HospitalAdmin hospitalAdmin = new HospitalAdmin();
+//        String token = generateToken(hospitalAdmin.getEmail());
+//
+//        if (token == null || token.isEmpty()) {
+//            return false;
+//        }
+//        return isTokenValid(token);
+//    }
+//
+//    private boolean isTokenValid(String token) {
+//        try {
+//            Jwts.parser().
+//                    setSigningKey(jwtConfig.getJwtSecretKey()).parseClaimsJws(token);
+//            return true;
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
 
     @Override
     public RegisterDeathResponse registerBody(DeathReq deathReq) {
@@ -133,6 +202,21 @@ public class HospitalServiceImpl implements HospitalService{
         childRepository.save(child);
 
         return child;
+    }
+
+    @Override
+    public List<Child> searchChild(SearchChildReq searchChildReq) {
+        return childRepository.findChildByNameIsContaining(searchChildReq.getName());
+    }
+
+    @Override
+    public List<Death> hosSearchDeceased(SearchDeathRequest searchDeathRequest) {
+        return hospitalDeathRepo.findDeathByDeceasedName(searchDeathRequest.getDeceasedName());
+    }
+
+    @Override
+    public List<Death> getAllDeceasedInfo() {
+        return hospitalDeathRepo.findAll();
     }
 
     @Override
@@ -202,6 +286,10 @@ public class HospitalServiceImpl implements HospitalService{
     }
 
 
-
-
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<HospitalAdmin> foundAccount = hospitalAdminRepo.findHospitalAdminByEmailIgnoreCase(email);
+        HospitalAdmin account = foundAccount.orElseThrow();
+        return new SecureUser(account);
+    }
 }
