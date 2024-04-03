@@ -205,10 +205,10 @@ public class HospitalServiceImpl implements HospitalService, UserDetailsService 
         return child;
     }
 
-    @Override
-    public List<Child> searchChild(SearchChildReq searchChildReq) {
-        return childRepository.findChildByNameIsContaining(searchChildReq.getName());
-    }
+//    @Override
+//    public List<Child> searchChild(SearchChildReq searchChildReq) {
+//        return childRepository.findChildByNameIsContaining(searchChildReq.getName());
+//    }
 
     @Override
     public List<Death> hosSearchDeceased(SearchDeathRequest searchDeathRequest) {

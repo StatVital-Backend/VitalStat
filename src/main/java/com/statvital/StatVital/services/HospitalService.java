@@ -25,7 +25,7 @@ public interface HospitalService {
 
     Child updateChildInfo(UpdateChildReq updateChildReq);
 
-   List<Child> searchChild(SearchChildReq searchChildReq);
+//   List<Child> searchChild(SearchChildReq searchChildReq);
 
    List<Death> hosSearchDeceased(SearchDeathRequest searchDeathRequest);
 
