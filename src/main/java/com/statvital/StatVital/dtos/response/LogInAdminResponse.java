@@ -1,8 +1,10 @@
 package com.statvital.StatVital.dtos.response;
 
 
+import lombok.Builder;
 import lombok.Data;
 
+@Builder
 @Data
 public class LogInAdminResponse {
     private String logInDate;

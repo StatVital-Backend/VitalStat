@@ -15,4 +15,5 @@ public interface HospitalAdminRepo extends JpaRepository<HospitalAdmin, Long> {
     Optional<HospitalAdmin> findHospitalAdminByEmailIgnoreCase(String Email);
 
 
+
 }

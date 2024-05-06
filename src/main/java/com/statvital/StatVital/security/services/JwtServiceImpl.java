@@ -1,63 +1,74 @@
 package com.statvital.StatVital.security.services;
 
+import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.statvital.StatVital.security.JwtConfig;
-import com.statvital.StatVital.security.services.JwtService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import com.auth0.jwt.JWT;
 
+import java.nio.charset.StandardCharsets;
+import java.security.Key;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-
-import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
-import static java.time.ZoneOffset.UTC;
 
 @Service
 @AllArgsConstructor
 public class JwtServiceImpl implements JwtService {
-    private final JwtConfig jwtConfig;
+    private final JwtConfiguration jwtConfiguration;
     @Override
-    public String generateTokenFor(String email) {
-        System.out.println("I got to generate token");
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
+
+    public String generateToken(Map<String, Object> extraClaims , UserDetails userDetails) {
         return JWT.create()
-                .withSubject("access_token")
-                .withClaim("username", email)
-                .withExpiresAt(LocalDateTime.now().plusDays(Long.parseLong(jwtConfig.getJwtSecretKey()))
-                        .toInstant(UTC))
-                .sign(HMAC512(jwtConfig.getJwtSecretKey().getBytes()));
+                .withSubject(userDetails.getUsername())
+                .withClaim("Claims", extraClaims)
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
+                .sign(Algorithm.HMAC256(jwtConfiguration.getJwtSecret()));
 
-
+    }
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
     }
 
     @Override
-    public boolean validate(String token) {
-        System.out.println("I got to validate token");
-
-        Algorithm algorithm = HMAC512(jwtConfig.getJwtSecretKey().getBytes());
-        DecodedJWT decodedJWT = JWT.require(algorithm)
-                .build().verify(token);
-        return isValidToken(decodedJWT);
+    public boolean validateToken(String token, UserDetails user) {
+        final String username = extractUsername(token);
+        return (username.equals(user.getUsername())) && !isTokenExpired(token);
+    }
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
     }
 
-    private static boolean isValidToken(DecodedJWT decodedJWT) {
-        return isTokenNotExpired(decodedJWT) && isTokenWithValidIssuer(decodedJWT);
+    private Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 
-    private static boolean isTokenWithValidIssuer(DecodedJWT decodedJWT) {
-        return decodedJWT.getIssuer().equals("sync");
+    private Claims extractAllClaims(String token){
+        System.out.println("token" + token);
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
-    private static boolean isTokenNotExpired(DecodedJWT decodedJWT) {
-        return Instant.now().isAfter(decodedJWT.getExpiresAtAsInstant());
-    }
 
-    @Override
-    public UserDetails extractUserDetailsFrom(String token) {
-        return null;
+
+    private Key getSignInKey() {
+        byte[] keyBytes = jwtConfiguration.getJwtSecret().getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 }

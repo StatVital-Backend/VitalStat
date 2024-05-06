@@ -7,7 +7,6 @@ import com.statvital.StatVital.data.model.MorgueAdmin;
 import com.statvital.StatVital.dtos.request.ChildRequest;
 import com.statvital.StatVital.dtos.request.DeathReq;
 import com.statvital.StatVital.dtos.request.SignUpMorgueRequest;
-import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
 import com.statvital.StatVital.dtos.response.SignUpMorgueResponse;
 
 import java.time.LocalDateTime;

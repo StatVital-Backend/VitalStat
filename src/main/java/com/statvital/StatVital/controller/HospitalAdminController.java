@@ -5,41 +5,41 @@ import com.statvital.StatVital.dtos.request.*;
 import com.statvital.StatVital.dtos.response.*;
 import com.statvital.StatVital.services.DataBaseService;
 import com.statvital.StatVital.services.HospitalService;
+
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/v1")
 @AllArgsConstructor
+@Slf4j
 public class HospitalAdminController {
     private final HospitalService hospitalService;
-    private final DataBaseService dataBaseService;
+
+
     @PostMapping("/signUpHospital")
-    public ResponseEntity<SignInHospitalAdminResponse> signIn (@RequestBody SignUpHospitalAdminRequest request){
+    public ApiResponse<?> signIn (@RequestBody SignUpHospitalAdminRequest request){
        try{
-           SignInHospitalAdminResponse response = hospitalService.signup(request);
-           response.setMessage(response.getMessage());
-           return new ResponseEntity<>(response, HttpStatus.OK);
+           log.info("i am in the controller");
+          return ApiResponse.success(hospitalService.signup(request), "Sign Up Successfully");
        }catch (Exception error){
-           SignInHospitalAdminResponse signInHospitalAdminResponse  = new SignInHospitalAdminResponse();
-           signInHospitalAdminResponse.setMessage(error.getMessage());
-
-
-           return new ResponseEntity<>(signInHospitalAdminResponse, HttpStatus.BAD_REQUEST);
+         return ApiResponse.error("Sign Up Failed ");
        }
     }
 
     @PostMapping("/logInHospital")
-    public LogInAdminResponse login (@RequestBody SignInHospitalRequest request){
+    public ApiResponse<?> login (@RequestBody SignInHospitalRequest request ){
+
         try{
-            LogInAdminResponse logInAdminResponse = hospitalService.logIn(request);
-            return logInAdminResponse;
+            log.info("I am in the LogIn Controller");
+            return ApiResponse.success(hospitalService.logIn(request), "LogIn Successful");
         }catch (Exception error){
-            LogInAdminResponse errorResponse = new LogInAdminResponse();
-            return errorResponse;
+            return ApiResponse.error("Login Failed");
         }
     }
 

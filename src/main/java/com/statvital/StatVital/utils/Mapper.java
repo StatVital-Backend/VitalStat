@@ -1,48 +1,16 @@
 package com.statvital.StatVital.utils;
 
 import com.statvital.StatVital.data.model.Child;
-import com.statvital.StatVital.data.model.HospitalAdmin;
 import com.statvital.StatVital.dtos.request.*;
-import com.statvital.StatVital.dtos.response.SignInHospitalAdminResponse;
-import com.statvital.StatVital.services.MailServiceImpl;
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Mapper {
-    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-    public static HospitalAdmin hospitalMapper(SignUpHospitalAdminRequest request){
-        HospitalAdmin hospitalAdmin = new HospitalAdmin();
-        hospitalAdmin.setFacilityName(request.getFacilityName());
-        hospitalAdmin.setFacilityLocation(request.getFacilityLocation());
-        hospitalAdmin.setEmail(request.getEmail());
-        String encodedPassword = passwordEncoder.encode(request.getPassword());
-        hospitalAdmin.setPassword(encodedPassword);
-        return hospitalAdmin;
-    }
-
-    public static SignInHospitalAdminResponse  responseMapper(HospitalAdmin hospitalAdmin){
-        SignInHospitalAdminResponse response = new SignInHospitalAdminResponse();
-        response.setEmail(hospitalAdmin.getEmail());
-        response.setRegisterDate(DateTimeFormatter
-                .ofPattern("EEE dd/MMM/yyyy HH:mm:ss a")
-                .format(LocalDateTime.now()));
-        response.setMessage("Successfully Registered");
-//        response.setSuccessful(true);
-        response.setFacilityName(hospitalAdmin.getFacilityName());
-
-
-        return response;
-    }
 
     public static Child mapChild(ChildRequest childRequest){
         Child child = new Child();
