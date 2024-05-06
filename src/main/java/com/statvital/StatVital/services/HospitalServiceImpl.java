@@ -6,6 +6,7 @@ import com.statvital.StatVital.config.AppConfig;
 import com.statvital.StatVital.data.model.Child;
 import com.statvital.StatVital.data.model.Death;
 import com.statvital.StatVital.data.model.HospitalAdmin;
+import com.statvital.StatVital.data.model.Role;
 import com.statvital.StatVital.data.repository.ChildRepository;
 import com.statvital.StatVital.data.repository.DeathRepo;
 import com.statvital.StatVital.data.repository.HospitalAdminRepo;
@@ -19,14 +20,21 @@ import com.statvital.StatVital.exceptions.ChildExist;
 import com.statvital.StatVital.exceptions.ChildNotFound;
 import com.statvital.StatVital.exceptions.HospitalAlreadyExist;
 import com.statvital.StatVital.exceptions.HospitalNotFound;
-import com.statvital.StatVital.security.services.SecureUser;
+import com.statvital.StatVital.security.services.JwtServiceImpl;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -35,106 +43,85 @@ import static com.statvital.StatVital.utils.Mapper.*;
 
 @Service
 @AllArgsConstructor
-public class HospitalServiceImpl implements HospitalService, UserDetailsService {
+@Slf4j
+public class HospitalServiceImpl implements HospitalService {
     private final HospitalAdminRepo hospitalAdminRepo;
     private final ChildRepository childRepository;
     private final ChildService childService;
     private final DeathService deathService;
     private final MailService mailService;
-    private final AppConfig appConfig;
-    private final DeathRepo deathRepo;
+    private final JwtServiceImpl jwtService;
     private final HospitalDeathRepo hospitalDeathRepo;
-//    private final JwtConfig jwtConfig;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    private final AuthenticationProvider authenticationProvider;
+    private final PasswordEncoder passwordEncoder;
 
-//    private final Connection connection;
-//    private final JwtTokenImpl jwtToken;
-//    private HospitalAdmin loggedIn;
-//    private final ConfirmationRepo confirmationRepo;
+
 
     @Override
     public SignInHospitalAdminResponse signup(SignUpHospitalAdminRequest request) {
-        findHospital(request.getEmail());
-        mailService.sendMail(mailMapper(request));
-        return responseMapper(hospitalAdminRepo.save(hospitalMapper(request)));
+      Optional<HospitalAdmin> existedHospital = hospitalAdminRepo.
+              findHospitalAdminByEmailIgnoreCase(
+                      request.getEmail());
+        if(existedHospital.isPresent()){
+            throw new RuntimeException("Hospital Already Exist");
+        }
+
+        HospitalAdmin registeredHospital = HospitalAdmin.builder()
+                .facilityName(request.getFacilityName())
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.HOSPITAL_ADMIN)
+                .build();
+
+        hospitalAdminRepo.save(registeredHospital);
 
 
+        String jwtToken = jwtService.generateToken( registeredHospital);
+        return SignInHospitalAdminResponse.builder()
+                .facilityName(registeredHospital.getFacilityName())
+                .email(registeredHospital.getEmail())
+                .token(jwtToken)
+                .registerDate(LocalDate.from(LocalDateTime.now()))
+                .message("Hospital successfully registered")
+                .build();
     }
 
     @Override
     public LogInAdminResponse logIn(SignInHospitalRequest request) {
-        Optional<HospitalAdmin> hospitalAdmin = getAdmin(request.getEmail());
-        if (hospitalAdmin.isEmpty()) {
-            LogInAdminResponse logInAdminResponse = new LogInAdminResponse();
-            logInAdminResponse.setMessage("Hospital Not Found");
-            logInAdminResponse.setLogInDate(String.valueOf(LocalDateTime.now()));
-            return logInAdminResponse;
+        log.info("I am in the login service");
+        try {
+            log.info("I am in the auth provider");
+            authenticationProvider.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getFacilityName(), request.getPassword())
+            );
+
+            log.info("looking for hospital");
+            HospitalAdmin user = hospitalAdminRepo.findHospitalAdminByFacilityName(request.getFacilityName()).orElse(null);
+            if (user == null) {
+                return null;
+            }
+            log.info("found hospital");
+
+            var jwtToken = jwtService.generateToken( user);
+            log.info("generated token");
+            return LogInAdminResponse.builder()
+                    .token(jwtToken)
+                    .message("successfully logged in")
+                    .build();
+        } catch (AuthenticationException e) {
+            return LogInAdminResponse.builder().message("Authentication failed for user {}" + e.getMessage()).build();
         }
-        if (!(bCryptPasswordEncoder.matches(request.getPassword(), hospitalAdmin.get().getPassword()))) {
-            LogInAdminResponse logInAdminResponse = new LogInAdminResponse();
-            logInAdminResponse.setMessage("Incorrect password");
-            logInAdminResponse.setLogInDate(String.valueOf(LocalDateTime.now()));
-            return logInAdminResponse;
-//            throw new IllegalArgumentException("Incorrect password");
-        }
-//        String token = generateToken(hospitalAdmin.get().getEmail());
-//        System.out.println(token);
-        System.out.println(hospitalAdmin);
-//        validatePassword(request, hospitalAdmin);
 
-//        loggedIn = hospitalAdmin;
-
-        hospitalAdmin.get().setLoggedIn(true);
-        hospitalAdminRepo.save(hospitalAdmin.get());
-        Optional<HospitalAdmin> hospitalAdmin1 = hospitalAdminRepo.findHospitalAdminByEmailIgnoreCase(request.getEmail());
-//
-//        String token = jwtToken.generateToken(hospitalAdmin1.getEmail(), hospitalAdmin1.getPassword());
-//        String verifiedToken = jwtToken.verifyToken(String.valueOf(hospitalAdmin1.getEmail().equals(token)));
-
-        HospitalAdmin hos = hospitalAdminRepo.saveAndFlush(hospitalAdmin.get());
-//        Optional<HospitalAdmin> hospitalAdmin1 = hospitalAdminRepo.findHospitalAdminByEmailIgnoreCase(request.getEmail());
-        //
-        //        String token = jwtToken.generateToken(hospitalAdmin1.getEmail(), hospitalAdmin1.getPassword());
-        //        String verifiedToken = jwtToken.verifyToken(String.valueOf(hospitalAdmin1.getEmail().equals(token)));
-        System.out.println(hos);
-
-        LogInAdminResponse logInAdminResponse = new LogInAdminResponse();
-        logInAdminResponse.setMessage("Login Successful");
-//        logInAdminResponse.setToken(token);
-        logInAdminResponse.setLoggedIn(hospitalAdmin1.get().isLoggedIn());
-        logInAdminResponse.setLogInDate(String.valueOf(LocalDateTime.now()));
-
-        return logInAdminResponse;
 
     }
-//    private String generateToken(String email) {
-//        return Jwts.builder()
-//                .setSubject(email)
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date(System.currentTimeMillis() + jwtConfig.getJwtDuration()))
-//                .signWith(SignatureAlgorithm.HS512, jwtConfig.getJwtSecretKey())
-//                .compact();
-//    }
+
 
 
 
 
     @Override
     public RegisterChildResponse registerChild(ChildRequest childRequest) {
-//        if (!isLoggedIn()) {
-//            RegisterChildResponse response = new RegisterChildResponse();
-//            response.setMessage("Kindly Login or SignUp.");
-//            return response;
-//        }
 
-//        logIn(token);
-//
-//        ensureLoggedIn(token);
-//        boolean isTokenValid = Boolean.parseBoolean(jwtToken.verifyToken(toString()));
-//
-//        if (!isTokenValid) {
-//            throw new InvalidTokenException("Invalid token");
-//        }
         findRegisteredChild(generateReferenceId());
 
         childService.registerChild(childRequest);
@@ -145,25 +132,7 @@ public class HospitalServiceImpl implements HospitalService, UserDetailsService 
 
         return response;
     }
-//    private boolean isLoggedIn() {
-//        HospitalAdmin hospitalAdmin = new HospitalAdmin();
-//        String token = generateToken(hospitalAdmin.getEmail());
-//
-//        if (token == null || token.isEmpty()) {
-//            return false;
-//        }
-//        return isTokenValid(token);
-//    }
-//
-//    private boolean isTokenValid(String token) {
-//        try {
-//            Jwts.parser().
-//                    setSigningKey(jwtConfig.getJwtSecretKey()).parseClaimsJws(token);
-//            return true;
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
+
 
     @Override
     public RegisterDeathResponse registerBody(DeathReq deathReq) {
@@ -234,37 +203,7 @@ public class HospitalServiceImpl implements HospitalService, UserDetailsService 
         return childOptional.get();
     }
 
-//    private void ensureLoggedIn(String token) {
-//
-//        if (loggedIn == null || !loggedIn.isLoggedIn()) {
-//            throw new NotLoggedInException("User is not logged in");
-//        }
-//    }
 
-
-//    @Override
-//    public Boolean verifyToken(String token) {
-//        Confirmation confirmation = confirmationRepo.findByToken(token);
-//        Optional<HospitalAdmin> hospitalAdmin = hospitalAdminRepo
-//                .findHospitalAdminByEmailIgnoreCase(confirmation.getHospitalAdmin().getEmail());
-//        hospitalAdmin.get().setEnabled(true);
-//        hospitalAdminRepo.save(new HospitalAdmin());
-//        return Boolean.TRUE;
-
-//        if (hospitalAdmin.isPresent()) {
-//            HospitalAdmin hospitalAdmin = new HospitalAdmin();
-//            hospitalAdminRepo.save(hospitalAdmin);
-//
-//            return Boolean.TRUE;
-//        } else {
-//            return Boolean.FALSE;
-//        }
-//    }
-
-//    private void validatePassword(SignInHospitalRequest request, HospitalAdmin admin) {
-//        if(!admin.getPassword().equals(request.getPassword()))
-//            throw  new IncorrectCredentials("Incorrect Username or password");
-//    }
 
     private Optional<HospitalAdmin> getAdmin(String email) {
         Optional<HospitalAdmin> admin =hospitalAdminRepo.findHospitalAdminByEmailIgnoreCase(email);
@@ -284,13 +223,5 @@ public class HospitalServiceImpl implements HospitalService, UserDetailsService 
         if(admin.isPresent())
 //            System.out.println("Hospital Already exist");
             throw new HospitalAlreadyExist("Hospital Already Exist");
-    }
-
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<HospitalAdmin> foundAccount = hospitalAdminRepo.findHospitalAdminByEmailIgnoreCase(email);
-        HospitalAdmin account = foundAccount.orElseThrow();
-        return new SecureUser(account);
     }
 }

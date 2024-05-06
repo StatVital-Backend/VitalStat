@@ -1,9 +1,6 @@
 package com.statvital.StatVital.data.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -26,5 +23,7 @@ public class Death {
     private String gender;
     private String status;
     private String occupation;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private MorgueAdmin morgueAdmin;
 
 }
