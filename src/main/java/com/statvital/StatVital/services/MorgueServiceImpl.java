@@ -1,14 +1,12 @@
 package com.statvital.StatVital.services;
 
-import com.statvital.StatVital.data.model.Child;
 import com.statvital.StatVital.data.model.Death;
-import com.statvital.StatVital.data.model.HospitalAdmin;
 import com.statvital.StatVital.data.model.MorgueAdmin;
+import com.statvital.StatVital.data.repository.DeathRepo;
 import com.statvital.StatVital.data.repository.MorgueAdminRepo;
 import com.statvital.StatVital.dtos.request.DeathReq;
 import com.statvital.StatVital.dtos.request.SignInMorgueRequest;
 import com.statvital.StatVital.dtos.request.SignUpMorgueRequest;
-import com.statvital.StatVital.dtos.response.LogInAdminResponse;
 import com.statvital.StatVital.dtos.response.LogInMorgueResponse;
 import com.statvital.StatVital.dtos.response.RegisterDeathResponse;
 import com.statvital.StatVital.dtos.response.SignUpMorgueResponse;
@@ -17,6 +15,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static com.statvital.StatVital.utils.Mapper.generateReferenceId;
@@ -29,6 +28,7 @@ public class MorgueServiceImpl implements MorgueService{
 
     private final MorgueAdminRepo morgueAdminRepo;
     private final DeathService deathService;
+    private final DeathRepo deathRepo;
 
     @Override
     public SignUpMorgueResponse signup(SignUpMorgueRequest request) {
@@ -84,10 +84,16 @@ public class MorgueServiceImpl implements MorgueService{
     }
 
     @Override
-    public Death searchDeath(String name) {
+    public Optional<Death> searchDeath(String name) {
         Optional<Death> death = deathService.findBody(name);
         if (death.isEmpty()) throw new ChildNotFound("Corpse not found");
-        return death.get();
+        return death;
+    }
+
+    @Override
+    public List<Death> getData() {
+        return deathRepo.findAll();
+
     }
 
 

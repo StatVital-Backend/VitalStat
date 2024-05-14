@@ -2,8 +2,10 @@ package com.statvital.StatVital.controller;
 
 
 import com.statvital.StatVital.dtos.request.DeathReq;
+import com.statvital.StatVital.dtos.request.SearchDeathRequest;
 import com.statvital.StatVital.dtos.request.SignInMorgueRequest;
 import com.statvital.StatVital.dtos.request.SignUpMorgueRequest;
+import com.statvital.StatVital.dtos.response.ApiResponse;
 import com.statvital.StatVital.dtos.response.LogInMorgueResponse;
 import com.statvital.StatVital.dtos.response.RegisterDeathResponse;
 import com.statvital.StatVital.dtos.response.SignUpMorgueResponse;
@@ -22,11 +24,9 @@ public class MorgueController {
     @PostMapping("/Sign-In-Morgue")
     public SignUpMorgueResponse signIn(@RequestBody SignUpMorgueRequest signUpMorgueRequest){
         try {
-            SignUpMorgueResponse signUpMorgueResponse = morgueService.signup(signUpMorgueRequest);
-            return signUpMorgueResponse;
+            return morgueService.signup(signUpMorgueRequest);
         }catch (Exception e){
-            SignUpMorgueResponse response = new SignUpMorgueResponse();
-            return response;
+            return new SignUpMorgueResponse();
         }
     }
 
@@ -34,24 +34,42 @@ public class MorgueController {
     @PostMapping("/Log-In-Morgue")
     public LogInMorgueResponse logIn(@RequestBody SignInMorgueRequest signInMorgueRequest){
         try {
-            LogInMorgueResponse logIn = morgueService.loginMorgue(signInMorgueRequest);
-            return logIn;
+            return morgueService.loginMorgue(signInMorgueRequest);
         }catch (Exception e){
-            LogInMorgueResponse response = new LogInMorgueResponse();
-            return response;
+            return new LogInMorgueResponse();
         }
     }
     @PostMapping("/RegisterDeath")
     public RegisterDeathResponse registerDeath(@RequestBody DeathReq deathReq){
         try{
-            RegisterDeathResponse register = morgueService.registerBody(deathReq);
-            return register;
+            return morgueService.registerBody(deathReq);
 
         }catch (Exception e){
-            RegisterDeathResponse error = new RegisterDeathResponse();
-            return error;
+            return new RegisterDeathResponse();
         }
 
     }
+
+    @PostMapping("searchDeath")
+    public ApiResponse<?> searchDeath(@RequestBody SearchDeathRequest searchDeathRequest){
+        try {
+           return ApiResponse.success(morgueService.searchDeath(searchDeathRequest.getDeceasedName()),
+                   "Morgue Found");
+        } catch (Exception e) {
+            return ApiResponse.error(e.getMessage());
+        }
+    }
+
+    @GetMapping("getData")
+    public ApiResponse<?> getDeathData(){
+
+        try {
+            return ApiResponse.success(morgueService.getData(),"Successful");
+        }catch (Exception error){
+            return ApiResponse.error(error.getMessage());
+        }
+    }
+
+
 
 }

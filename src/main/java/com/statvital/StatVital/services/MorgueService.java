@@ -8,11 +8,16 @@ import com.statvital.StatVital.dtos.response.LogInMorgueResponse;
 import com.statvital.StatVital.dtos.response.RegisterDeathResponse;
 import com.statvital.StatVital.dtos.response.SignUpMorgueResponse;
 
+import java.util.List;
+import java.util.Optional;
+
 public interface MorgueService {
     SignUpMorgueResponse signup (SignUpMorgueRequest request);
 
     LogInMorgueResponse loginMorgue (SignInMorgueRequest request);
     RegisterDeathResponse registerBody(DeathReq deathReq);
 
-    Death searchDeath (String name);
+    Optional<?> searchDeath (String name);
+    List<Death> getData();
+
 }
