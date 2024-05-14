@@ -23,6 +23,7 @@ public class Death {
     private String gender;
     private String status;
     private String occupation;
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     private MorgueAdmin morgueAdmin;
 

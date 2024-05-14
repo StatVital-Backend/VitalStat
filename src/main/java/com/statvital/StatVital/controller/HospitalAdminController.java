@@ -46,39 +46,25 @@ public class HospitalAdminController {
     @PostMapping("/RegisterChild")
     public RegisterChildResponse registerChild (@RequestBody ChildRequest childRequest){
         try{
-            RegisterChildResponse response = hospitalService.registerChild(childRequest);
-            return response;
+            return hospitalService.registerChild(childRequest);
 
         }catch (Exception error){
-            RegisterChildResponse errorResponse = new RegisterChildResponse();
-            return errorResponse;
+            return new RegisterChildResponse();
         }
     }
     @PostMapping("/registerDeath")
     public RegisterDeathResponse registerDeath(@RequestBody DeathReq deathReq){
 
         try{
-            RegisterDeathResponse deathResponse = hospitalService.registerBody(deathReq);
-            return deathResponse;
+            return hospitalService.registerBody(deathReq);
 
         }catch (Exception error){
-            RegisterDeathResponse errorResponse = new RegisterDeathResponse();
-            return errorResponse;
+            return new RegisterDeathResponse();
         }
     }
 
-//    @GetMapping("/Find")
-//    public Object findChildRes(@RequestBody SearchChildReq name){
-//        System.out.println("I m searching for..." + name);
-//        try{
-//           return hospitalService.findChild(name);
-//        }catch (Exception e){
-//            return e.getMessage();
-//        }
-//
-//    }
 
-    @GetMapping("/search")
+    @GetMapping("/searchChild")
     public Object searchChildRes(@RequestBody SearchChildReq name){
         try{
             return hospitalService.searchChild(name);
@@ -106,6 +92,27 @@ public class HospitalAdminController {
         } catch (Exception e) {
             return e.getMessage();
         }
+    }
+
+    @PutMapping("updateChildInfo")
+    public ApiResponse<?> updateInfo(@RequestBody UpdateChildReq updateChildReq ){
+        try {
+            return ApiResponse.success(hospitalService.updateChildInfo(updateChildReq),
+                    "Updated Successfully");
+        }catch (Exception e){
+            return ApiResponse.error("An error occurred, Child not updated");
+        }
+    }
+
+    @GetMapping("/searchBody")
+    public ApiResponse<?> searchDeceasedRes(@RequestBody SearchDeathRequest searchDeathRequest){
+        try{
+            return ApiResponse.success(hospitalService.hosSearchDeceased(searchDeathRequest),
+                    "Deceased Found in Hospital");
+        }catch (Exception e){
+            return ApiResponse.error("Deceased Not Found");
+        }
+
     }
 
 

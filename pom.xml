@@ -22,12 +22,6 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
-<!--		<dependency>-->
-<!--			<groupId>org.postgresql</groupId>-->
-<!--			<artifactId>postgresql</artifactId>-->
-<!--			<version>42.7.1</version>-->
-<!--		</dependency>-->
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -47,19 +41,6 @@
 			<version>6.2.2</version>
 		</dependency>
 
-
-		<!--		&lt;!&ndash; https://mvnrepository.com/artifact/com.auth0/java-jwt &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>com.auth0</groupId>-->
-<!--			<artifactId>java-jwt</artifactId>-->
-<!--			<version>4.4.0</version>-->
-<!--		</dependency>-->
-<!--		&lt;!&ndash; https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>io.jsonwebtoken</groupId>-->
-<!--			<artifactId>jjwt-api</artifactId>-->
-<!--			<version>0.12.5</version>-->
-<!--		</dependency>-->
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -142,6 +123,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
+			<version>3.2.3</version>
 		</dependency>
 
 	</dependencies>

@@ -22,6 +22,7 @@ public class Child {
     private String sex;
     private String referenceId;
     private String age;
+
     @ManyToOne(cascade = CascadeType.PERSIST)
     private HospitalAdmin hospitalAdmin;
 

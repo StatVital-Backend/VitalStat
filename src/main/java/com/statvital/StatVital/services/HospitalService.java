@@ -19,13 +19,11 @@ public interface HospitalService {
     RegisterDeathResponse registerBody(DeathReq deathReq);
 
     String deleteChildInfo(DeleteChildReq deleteChildReq);
-//    Boolean verifyToken(String token);
 
     Child searchChild(SearchChildReq searchChildReq);
 
     Child updateChildInfo(UpdateChildReq updateChildReq);
 
-//   List<Child> searchChild(SearchChildReq searchChildReq);
 
    List<Death> hosSearchDeceased(SearchDeathRequest searchDeathRequest);
 

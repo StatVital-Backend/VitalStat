@@ -166,9 +166,16 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     public Child updateChildInfo(UpdateChildReq updateChildReq) {
         Child child = findChild(updateChildReq.getName());
+        if(child == null){
+            throw new ChildNotFound("Child Not Found");
+        }
 
-        child.setName(updateChildReq.getName());
-        child.setAge(updateChildReq.getAge());
+        if (updateChildReq.getName() != null) {
+            child.setName(updateChildReq.getName());
+        }
+        if (updateChildReq.getAge() != null) {
+            child.setAge(updateChildReq.getAge());
+        }
         childRepository.save(child);
 
         return child;
